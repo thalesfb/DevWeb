@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<!-- Define o tipo de documento e o idioma como português do Brasil -->
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- Define a codificação de caracteres como UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Configura a viewport para garantir que a página seja responsiva -->
+  <title>Lista de Tarefas</title>
+  <!-- Define o título da página -->
+  <meta name="description" content="Sistema de Lista de Tarefas para gerenciamento eficiente." />
+  <!-- Adiciona uma descrição da página -->
+  <meta name="author" content="Thales" />
+  <!-- Define o autor da página -->
+
+  <!-- Fonte Externa do Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <!-- Preconecta ao domínio do Google Fonts para melhorar o desempenho -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Preconecta ao domínio do Google Fonts com credenciais de origem cruzada -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <!-- Link para a fonte externa Roboto do Google Fonts -->
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" />
+  <!-- Link para o favicon da página -->
+
+  <!-- Link para o CSS -->
+  <link rel="stylesheet" href="reset.css">
+  <!-- Link para o arquivo CSS de reset -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Link para o arquivo CSS de estilos -->
+</head>
+
+<body>
+  <header class="header">
+    <!-- Cabeçalho da página -->
+    <h1>Lista de Tarefas</h1>
+    <!-- Título principal da página -->
+    <button id="theme-toggle" aria-label="Alternar Tema">🌙</button>
+    <!-- Botão para alternar entre temas claro e escuro -->
+  </header>
+
+  <main>
+    <!-- Conteúdo principal da página -->
+    <section class="task-input">
+      <!-- Seção para entrada de novas tarefas -->
+      <form id="task-form">
+        <!-- Formulário para adicionar novas tarefas -->
+        <label for="task-input">Adicionar Nova Tarefa:</label>
+        <!-- Rótulo para o campo de entrada de tarefa -->
+        <input type="text" id="task-input" name="task" placeholder="Digite a tarefa" required aria-required="true" />
+        <!-- Campo de entrada de texto para a nova tarefa -->
+        <button type="submit">Adicionar</button>
+        <!-- Botão para submeter o formulário e adicionar a tarefa -->
+      </form>
+      <div class="filter">
+        <!-- Div para o campo de filtro de tarefas -->
+        <label for="filter-input">Filtrar Tarefas:</label>
+        <!-- Rótulo para o campo de filtro -->
+        <input type="text" id="filter-input" placeholder="Filtrar por nome" />
+        <!-- Campo de entrada de texto para filtrar tarefas -->
+      </div>
+    </section>
+
+    <section class="task-list">
+      <!-- Seção para a lista de tarefas -->
+      <ul id="tasks">
+        <!-- Lista não ordenada onde as tarefas serão inseridas dinamicamente -->
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <!-- Rodapé da página -->
+    <p>© Thales 2024</p>
+    <!-- Direitos autorais -->
+  </footer>
+
+  <!-- Script JavaScript -->
+  <script src="main.js"></script>
+  <!-- Link para o arquivo JavaScript principal -->
+</body>
+
+</html>

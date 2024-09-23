@@ -1,0 +1,204 @@
+/* Fonte Externa */
+body {
+  font-family: 'Roboto', sans-serif; /* Define a fonte padrão como Roboto */
+  background-color: var(--background-color); /* Define a cor de fundo usando uma variável CSS */
+  color: var(--text-color); /* Define a cor do texto usando uma variável CSS */
+  transition: background-color 0.3s, color 0.3s; /* Adiciona uma transição suave para mudanças de cor de fundo e texto */
+}
+
+/* Variáveis de Tema */
+:root {
+  --background-color: #ffffff; /* Cor de fundo padrão */
+  --text-color: #000000; /* Cor do texto padrão */
+  --header-footer-bg: #333333; /* Cor de fundo do cabeçalho e rodapé */
+  --header-footer-text: #ffffff; /* Cor do texto do cabeçalho e rodapé */
+  --button-bg: #007bff; /* Cor de fundo dos botões */
+  --button-text: #ffffff; /* Cor do texto dos botões */
+  --button-hover-bg: #0056b3; /* Cor de fundo dos botões ao passar o mouse */
+  --task-bg: #f9f9f9; /* Cor de fundo das tarefas */
+  --task-completed-bg: #d4edda; /* Cor de fundo das tarefas concluídas */
+  --input-border: #cccccc; /* Cor da borda dos campos de entrada */
+}
+
+body.dark-theme {
+  --background-color: #121212; /* Cor de fundo para o tema escuro */
+  --text-color: #e0e0e0; /* Cor do texto para o tema escuro */
+  --header-footer-bg: #1f1f1f; /* Cor de fundo do cabeçalho e rodapé para o tema escuro */
+  --header-footer-text: #e0e0e0; /* Cor do texto do cabeçalho e rodapé para o tema escuro */
+  --button-bg: #6c757d; /* Cor de fundo dos botões para o tema escuro */
+  --button-hover-bg: #5a6268; /* Cor de fundo dos botões ao passar o mouse para o tema escuro */
+  --task-bg: #1e1e1e; /* Cor de fundo das tarefas para o tema escuro */
+  --task-completed-bg: #155724; /* Cor de fundo das tarefas concluídas para o tema escuro */
+  --input-border: #555555; /* Cor da borda dos campos de entrada para o tema escuro */
+}
+
+/* Cabeçalho */
+.header {
+  background-color: var(--header-footer-bg); /* Define a cor de fundo do cabeçalho usando uma variável CSS */
+  color: var(--header-footer-text); /* Define a cor do texto do cabeçalho usando uma variável CSS */
+  display: flex; /* Define o layout do cabeçalho como flexível */
+  justify-content: space-between; /* Distribui o espaço entre os itens do cabeçalho */
+  align-items: center; /* Alinha os itens do cabeçalho ao centro */
+  padding: 20px; /* Adiciona preenchimento interno ao cabeçalho */
+}
+
+.header h1 {
+  font-size: 24px; /* Define o tamanho da fonte do título do cabeçalho */
+}
+
+#theme-toggle {
+  background: none; /* Remove o fundo do botão de alternância de tema */
+  border: none; /* Remove a borda do botão de alternância de tema */
+  color: var(--header-footer-text); /* Define a cor do texto do botão de alternância de tema */
+  font-size: 24px; /* Define o tamanho da fonte do botão de alternância de tema */
+  cursor: pointer; /* Altera o cursor para indicar que o botão é clicável */
+}
+
+/* Main */
+main {
+  padding: 20px; /* Adiciona preenchimento interno ao conteúdo principal */
+  max-width: 800px; /* Define a largura máxima do conteúdo principal */
+  margin: 0 auto; /* Centraliza o conteúdo principal horizontalmente */
+}
+
+/* Formulário de Tarefas */
+.task-input {
+  display: flex; /* Define o layout da seção de entrada de tarefas como flexível */
+  flex-direction: column; /* Define a direção dos itens como coluna */
+  gap: 15px; /* Adiciona um espaço entre os itens */
+  margin-bottom: 30px; /* Adiciona uma margem inferior à seção de entrada de tarefas */
+}
+
+.task-input form {
+  display: flex; /* Define o layout do formulário como flexível */
+  flex-direction: column; /* Define a direção dos itens do formulário como coluna */
+}
+
+.task-input label {
+  margin-bottom: 5px; /* Adiciona uma margem inferior aos rótulos */
+  font-weight: bold; /* Define o peso da fonte dos rótulos como negrito */
+}
+
+.task-input input[type='text'] {
+  padding: 10px; /* Adiciona preenchimento interno aos campos de entrada de texto */
+  border: 1px solid var(--input-border); /* Define a borda dos campos de entrada de texto usando uma variável CSS */
+  border-radius: 4px; /* Adiciona cantos arredondados aos campos de entrada de texto */
+  font-size: 16px; /* Define o tamanho da fonte dos campos de entrada de texto */
+}
+
+.task-input button {
+  margin-top: 10px; /* Adiciona uma margem superior ao botão */
+  padding: 10px; /* Adiciona preenchimento interno ao botão */
+  background-color: var(--button-bg); /* Define a cor de fundo do botão usando uma variável CSS */
+  color: var(--button-text); /* Define a cor do texto do botão usando uma variável CSS */
+  border: none; /* Remove a borda do botão */
+  border-radius: 4px; /* Adiciona cantos arredondados ao botão */
+  font-size: 16px; /* Define o tamanho da fonte do botão */
+  cursor: pointer; /* Altera o cursor para indicar que o botão é clicável */
+  transition: background-color 0.3s; /* Adiciona uma transição suave para mudanças de cor de fundo */
+}
+
+.task-input button:hover {
+  background-color: var(--button-hover-bg); /* Altera a cor de fundo do botão ao passar o mouse usando uma variável CSS */
+}
+
+/* Filtragem */
+.filter {
+  display: flex; /* Define o layout da seção de filtro como flexível */
+  flex-direction: column; /* Define a direção dos itens como coluna */
+}
+
+.filter label {
+  margin-bottom: 5px; /* Adiciona uma margem inferior aos rótulos */
+  font-weight: bold; /* Define o peso da fonte dos rótulos como negrito */
+}
+
+.filter input[type='text'] {
+  padding: 10px; /* Adiciona preenchimento interno aos campos de entrada de texto */
+  border: 1px solid var(--input-border); /* Define a borda dos campos de entrada de texto usando uma variável CSS */
+  border-radius: 4px; /* Adiciona cantos arredondados aos campos de entrada de texto */
+  font-size: 16px; /* Define o tamanho da fonte dos campos de entrada de texto */
+}
+
+/* Lista de Tarefas */
+.task-list ul {
+  list-style: none; /* Remove os marcadores da lista */
+  display: flex; /* Define o layout da lista de tarefas como flexível */
+  flex-direction: column; /* Define a direção dos itens da lista como coluna */
+  gap: 10px; /* Adiciona um espaço entre os itens da lista */
+}
+
+.task-list li {
+  background-color: var(--task-bg); /* Define a cor de fundo das tarefas usando uma variável CSS */
+  padding: 15px; /* Adiciona preenchimento interno às tarefas */
+  border-radius: 4px; /* Adiciona cantos arredondados às tarefas */
+  display: flex; /* Define o layout das tarefas como flexível */
+  align-items: center; /* Alinha os itens das tarefas ao centro */
+  justify-content: space-between; /* Distribui o espaço entre os itens das tarefas */
+  transition: background-color 0.3s, transform 0.3s; /* Adiciona uma transição suave para mudanças de cor de fundo e transformação */
+}
+
+.task-list li.completed {
+  background-color: var(--task-completed-bg); /* Define a cor de fundo das tarefas concluídas usando uma variável CSS */
+  text-decoration: line-through; /* Adiciona um traço ao texto das tarefas concluídas */
+  color: #155724; /* Define a cor do texto das tarefas concluídas */
+}
+
+.task-list .task-name {
+  flex: 1; /* Faz com que o nome da tarefa ocupe o espaço restante */
+  margin-left: 10px; /* Adiciona uma margem esquerda ao nome da tarefa */
+}
+
+.task-list .actions {
+  display: flex; /* Define o layout das ações das tarefas como flexível */
+  gap: 10px; /* Adiciona um espaço entre os botões de ação */
+}
+
+.task-list .actions button {
+  background: none; /* Remove o fundo dos botões de ação */
+  border: none; /* Remove a borda dos botões de ação */
+  cursor: pointer; /* Altera o cursor para indicar que os botões são clicáveis */
+  font-size: 18px; /* Define o tamanho da fonte dos botões de ação */
+  color: var(--button-bg); /* Define a cor do texto dos botões de ação usando uma variável CSS */
+  transition: color 0.3s; /* Adiciona uma transição suave para mudanças de cor do texto */
+}
+
+.task-list .actions button:hover {
+  color: var(--button-hover-bg); /* Altera a cor do texto dos botões de ação ao passar o mouse usando uma variável CSS */
+}
+
+/* Rodapé */
+.footer {
+  background-color: var(--header-footer-bg); /* Define a cor de fundo do rodapé usando uma variável CSS */
+  color: var(--header-footer-text); /* Define a cor do texto do rodapé usando uma variável CSS */
+  text-align: center; /* Centraliza o texto no rodapé */
+  padding: 20px; /* Adiciona preenchimento interno ao rodapé */
+  margin-top: 40px; /* Adiciona uma margem superior ao rodapé */
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .header,
+  .footer {
+    flex-direction: column; /* Define a direção dos itens como coluna em telas pequenas */
+    align-items: flex-start; /* Alinha os itens ao início em telas pequenas */
+  }
+
+  .header h1 {
+    margin-bottom: 10px; /* Adiciona uma margem inferior ao título do cabeçalho em telas pequenas */
+  }
+
+  .task-input,
+  .filter {
+    flex-direction: column; /* Define a direção dos itens como coluna em telas pequenas */
+  }
+
+  .task-list li {
+    flex-direction: column; /* Define a direção dos itens das tarefas como coluna em telas pequenas */
+    align-items: flex-start; /* Alinha os itens ao início em telas pequenas */
+  }
+
+  .task-list .actions {
+    margin-top: 10px; /* Adiciona uma margem superior às ações das tarefas em telas pequenas */
+  }
+}
