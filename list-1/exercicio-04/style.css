@@ -1,0 +1,193 @@
+/* Fonte padrão */
+body {
+  font-family: 'Roboto', sans-serif; /* Define a fonte padrão como Roboto */
+  background-color: #f9f9f9; /* Define a cor de fundo do corpo da página */
+  color: #333; /* Define a cor do texto */
+  line-height: 1.6; /* Define a altura da linha para melhorar a legibilidade */
+}
+
+/* Estilos do Header */
+header {
+  background-color: #4caf50; /* Define a cor de fundo do cabeçalho */
+  color: #fff; /* Define a cor do texto do cabeçalho */
+  padding: 20px 0; /* Adiciona preenchimento vertical ao cabeçalho */
+  text-align: center; /* Centraliza o texto no cabeçalho */
+}
+
+header h1 {
+  margin: 0; /* Remove a margem do título do cabeçalho */
+  font-size: 24px; /* Define o tamanho da fonte do título do cabeçalho */
+}
+
+/* Estilos do Main */
+main {
+  max-width: 800px; /* Define a largura máxima do conteúdo principal */
+  margin: 20px auto; /* Centraliza o conteúdo principal horizontalmente e adiciona margem vertical */
+  padding: 0 20px; /* Adiciona preenchimento horizontal ao conteúdo principal */
+}
+
+/* Estilos do Formulário */
+#photo-form {
+  background-color: #fff; /* Define a cor de fundo do formulário */
+  padding: 20px; /* Adiciona preenchimento interno ao formulário */
+  border-radius: 5px; /* Adiciona cantos arredondados ao formulário */
+  margin-bottom: 30px; /* Adiciona uma margem inferior ao formulário */
+}
+
+#photo-form fieldset {
+  border: 1px solid #ccc; /* Define a borda do fieldset */
+  padding: 15px; /* Adiciona preenchimento interno ao fieldset */
+  margin-bottom: 20px; /* Adiciona uma margem inferior ao fieldset */
+}
+
+#photo-form legend {
+  padding: 0 10px; /* Adiciona preenchimento horizontal à legenda */
+  font-weight: bold; /* Define o peso da fonte da legenda como negrito */
+}
+
+.form-group {
+  margin-bottom: 15px; /* Adiciona uma margem inferior ao grupo de formulário */
+}
+
+.form-group label {
+  display: block; /* Exibe o rótulo como um bloco */
+  margin-bottom: 5px; /* Adiciona uma margem inferior ao rótulo */
+}
+
+.form-group input[type='text'],
+.form-group input[type='file'],
+.form-group textarea {
+  width: 100%; /* Define a largura dos campos de entrada e textarea como 100% */
+  padding: 8px; /* Adiciona preenchimento interno aos campos */
+  font-size: 16px; /* Define o tamanho da fonte dos campos */
+}
+
+#photo-form button[type='submit'] {
+  background-color: #4caf50; /* Define a cor de fundo do botão de submit */
+  color: #fff; /* Define a cor do texto do botão de submit */
+  border: none; /* Remove a borda do botão de submit */
+  padding: 12px 20px; /* Adiciona preenchimento interno ao botão de submit */
+  font-size: 16px; /* Define o tamanho da fonte do botão de submit */
+  cursor: pointer; /* Altera o cursor para indicar que o botão é clicável */
+  border-radius: 5px; /* Adiciona cantos arredondados ao botão de submit */
+}
+
+#photo-form button[type='submit']:hover {
+  background-color: #45a049; /* Altera a cor de fundo do botão de submit ao passar o mouse */
+}
+
+/* Estilos da Lista de Fotos */
+#photos-list {
+  display: flex; /* Define o layout da lista de fotos como flexível */
+  flex-wrap: wrap; /* Permite que os itens da lista quebrem para a próxima linha */
+  gap: 20px; /* Adiciona um espaço entre os itens da lista */
+}
+
+.photo-card {
+  background-color: #fff; /* Define a cor de fundo do cartão de foto */
+  border: 1px solid #ccc; /* Define a borda do cartão de foto */
+  width: calc(33% - 20px); /* Define a largura do cartão de foto */
+  border-radius: 5px; /* Adiciona cantos arredondados ao cartão de foto */
+  overflow: hidden; /* Oculta o conteúdo que ultrapassa os limites do cartão */
+}
+
+.photo-card img {
+  width: 100%; /* Define a largura da imagem como 100% */
+  height: auto; /* Define a altura da imagem como automática */
+}
+
+.photo-card .photo-details {
+  padding: 15px; /* Adiciona preenchimento interno aos detalhes da foto */
+}
+
+.photo-card h3 {
+  margin-top: 0; /* Remove a margem superior do título do cartão de foto */
+}
+
+.photo-card p {
+  margin-bottom: 10px; /* Adiciona uma margem inferior ao parágrafo do cartão de foto */
+}
+
+.photo-card .photo-actions {
+  display: flex; /* Define o layout das ações da foto como flexível */
+  justify-content: space-between; /* Distribui o espaço entre as ações da foto */
+}
+
+.photo-card button {
+  background-color: #008cba; /* Define a cor de fundo dos botões de ação */
+  color: #fff; /* Define a cor do texto dos botões de ação */
+  border: none; /* Remove a borda dos botões de ação */
+  padding: 8px; /* Adiciona preenchimento interno aos botões de ação */
+  cursor: pointer; /* Altera o cursor para indicar que os botões são clicáveis */
+  font-size: 14px; /* Define o tamanho da fonte dos botões de ação */
+  border-radius: 5px; /* Adiciona cantos arredondados aos botões de ação */
+}
+
+.photo-card button:hover {
+  background-color: #007b9e; /* Altera a cor de fundo dos botões de ação ao passar o mouse */
+}
+
+/* Estilos da Modal */
+.modal {
+  display: none; /* Oculta o modal por padrão */
+  position: fixed; /* Define a posição do modal como fixa */
+  z-index: 10; /* Define a ordem de empilhamento do modal */
+  left: 0; /* Define a posição do modal à esquerda */
+  top: 0; /* Define a posição do modal no topo */
+  width: 100%; /* Define a largura do modal como 100% */
+  height: 100%; /* Define a altura do modal como 100% */
+  overflow: auto; /* Adiciona uma barra de rolagem se necessário */
+  background-color: rgba(0, 0, 0, 0.7); /* Define a cor de fundo do modal com transparência */
+}
+
+.modal-content {
+  background-color: #fefefe; /* Define a cor de fundo do conteúdo do modal */
+  margin: 40px auto; /* Centraliza o conteúdo do modal horizontalmente e adiciona margem vertical */
+  padding: 20px; /* Adiciona preenchimento interno ao conteúdo do modal */
+  border-radius: 5px; /* Adiciona cantos arredondados ao conteúdo do modal */
+  width: 90%; /* Define a largura do conteúdo do modal como 90% */
+  max-width: 700px; /* Define a largura máxima do conteúdo do modal */
+  position: relative; /* Define a posição do conteúdo do modal como relativa */
+}
+
+#close-modal {
+  position: absolute; /* Define a posição do botão de fechar como absoluta */
+  top: 10px; /* Define a posição do botão de fechar no topo */
+  right: 15px; /* Define a posição do botão de fechar à direita */
+  background: none; /* Remove o fundo do botão de fechar */
+  color: #aaa; /* Define a cor do texto do botão de fechar */
+  font-size: 28px; /* Define o tamanho da fonte do botão de fechar */
+  font-weight: bold; /* Define o peso da fonte do botão de fechar como negrito */
+  border: none; /* Remove a borda do botão de fechar */
+  cursor: pointer; /* Altera o cursor para indicar que o botão é clicável */
+}
+
+#close-modal:hover {
+  color: #000; /* Altera a cor do texto do botão de fechar ao passar o mouse */
+}
+
+#modal-image {
+  width: 100%; /* Define a largura da imagem do modal como 100% */
+  height: auto; /* Define a altura da imagem do modal como automática */
+  margin-bottom: 20px; /* Adiciona uma margem inferior à imagem do modal */
+}
+
+#modal-map {
+  width: 100%; /* Define a largura do mapa do modal como 100% */
+  height: 400px; /* Define a altura do mapa do modal como 400px */
+}
+
+/* Estilos Responsivos */
+@media (max-width: 768px) {
+  .photo-card {
+    width: calc(
+      50% - 20px
+    ); /* Define a largura do cartão de foto como 50% menos 20px em telas menores */
+  }
+}
+
+@media (max-width: 480px) {
+  .photo-card {
+    width: 100%; /* Define a largura do cartão de foto como 100% em telas menores */
+  }
+}

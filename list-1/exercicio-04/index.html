@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<!-- Define o tipo de documento e o idioma como português do Brasil -->
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- Define a codificação de caracteres como UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Configura a viewport para garantir que a página seja responsiva -->
+  <title>Foto com Localização</title>
+  <!-- Define o título da página -->
+  <meta name="description" content="Sistema web para tirar fotos e marcar localização" />
+  <!-- Adiciona uma descrição da página -->
+  <meta name="author" content="Thales" />
+  <!-- Define o autor da página -->
+  <link rel="stylesheet" href="reset.css" />
+  <!-- Link para o arquivo CSS de reset -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Link para o arquivo CSS de estilos -->
+  <!-- Fonte externa -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <!-- Link para a fonte externa Roboto do Google Fonts -->
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <!-- Link para o favicon da página -->
+</head>
+
+<body>
+  <header>
+    <h1>Foto com Localização</h1>
+    <!-- Cabeçalho da página com o título principal -->
+  </header>
+  <main>
+    <!-- Conteúdo principal da página -->
+    <section id="form-section">
+      <!-- Seção para o formulário de adicionar nova foto -->
+      <h2>Adicionar Nova Foto</h2>
+      <!-- Subtítulo da seção -->
+      <form id="photo-form">
+        <!-- Formulário para adicionar nova foto -->
+        <fieldset>
+          <!-- Agrupamento de campos relacionados -->
+          <legend>Foto</legend>
+          <!-- Legenda do agrupamento de campos -->
+          <div class="form-group">
+            <!-- Grupo de campos do formulário -->
+            <label for="capture-photo">Tirar Foto:</label>
+            <!-- Rótulo para o botão de capturar foto -->
+            <button type="button" id="capture-photo">Abrir Câmera</button>
+            <!-- Botão para abrir a câmera -->
+          </div>
+          <div class="form-group">
+            <!-- Grupo de campos do formulário -->
+            <label for="upload-photo">Ou Fazer Upload:</label>
+            <!-- Rótulo para o campo de upload de foto -->
+            <input type="file" id="upload-photo" accept="image/*" />
+            <!-- Campo de upload de foto, aceitando apenas imagens -->
+          </div>
+          <video id="video" autoplay hidden></video>
+          <!-- Elemento de vídeo para exibir a câmera, oculto por padrão -->
+          <canvas id="canvas" hidden></canvas>
+          <!-- Elemento de canvas para capturar a imagem da câmera, oculto por padrão -->
+        </fieldset>
+        <fieldset>
+          <!-- Agrupamento de campos relacionados -->
+          <legend>Localização</legend>
+          <!-- Legenda do agrupamento de campos -->
+          <div class="form-group">
+            <!-- Grupo de campos do formulário -->
+            <button type="button" id="get-location">Marcar Localização Atual</button>
+            <!-- Botão para marcar a localização atual -->
+            <p>Ou insira manualmente:</p>
+            <!-- Texto informativo -->
+            <label for="latitude">Latitude:</label>
+            <!-- Rótulo para o campo de latitude -->
+            <input type="text" id="latitude" name="latitude" required />
+            <!-- Campo de entrada para a latitude, obrigatório -->
+            <label for="longitude">Longitude:</label>
+            <!-- Rótulo para o campo de longitude -->
+            <input type="text" id="longitude" name="longitude" required />
+            <!-- Campo de entrada para a longitude, obrigatório -->
+          </div>
+        </fieldset>
+        <fieldset>
+          <!-- Agrupamento de campos relacionados -->
+          <legend>Detalhes</legend>
+          <!-- Legenda do agrupamento de campos -->
+          <div class="form-group">
+            <!-- Grupo de campos do formulário -->
+            <label for="title">Título:</label>
+            <!-- Rótulo para o campo de título -->
+            <input type="text" id="title" name="title" required />
+            <!-- Campo de entrada para o título, obrigatório -->
+          </div>
+          <div class="form-group">
+            <!-- Grupo de campos do formulário -->
+            <label for="description">Descrição:</label>
+            <!-- Rótulo para o campo de descrição -->
+            <textarea id="description" name="description"></textarea>
+            <!-- Campo de texto para a descrição -->
+          </div>
+        </fieldset>
+        <button type="submit">Salvar</button>
+        <!-- Botão para submeter o formulário -->
+      </form>
+    </section>
+    <section id="photos-section">
+      <!-- Seção para exibir as fotos -->
+      <h2>Minhas Fotos</h2>
+      <!-- Subtítulo da seção -->
+      <div id="photos-list">
+        <!-- Div onde os registros de fotos serão inseridos -->
+      </div>
+    </section>
+    <!-- Modal para visualizar detalhes -->
+    <div id="modal" class="modal" aria-hidden="true">
+      <!-- Div para o modal, inicialmente oculto -->
+      <div class="modal-content">
+        <!-- Conteúdo do modal -->
+        <button id="close-modal" aria-label="Fechar modal">&times;</button>
+        <!-- Botão para fechar o modal -->
+        <h2 id="modal-title"></h2>
+        <!-- Título do modal -->
+        <p id="modal-description"></p>
+        <!-- Descrição do modal -->
+        <img id="modal-image" src="" alt="Foto" />
+        <!-- Imagem exibida no modal -->
+        <div id="modal-map" aria-label="Mapa da localização"></div>
+        <!-- Div para exibir o mapa da localização -->
+      </div>
+    </div>
+  </main>
+  <footer>
+    <p>© Thales 2024</p>
+    <!-- Rodapé da página com os direitos autorais -->
+  </footer>
+  <script src="main.js"></script>
+  <!-- Link para o arquivo JavaScript principal -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Link para o arquivo CSS do Leaflet -->
+</body>
+
+</html>
