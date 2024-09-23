@@ -1,25 +1,35 @@
-// Seleção de elementos
-const captureButton = document.getElementById('capture-photo');
-const uploadInput = document.getElementById('upload-photo');
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const getLocationButton = document.getElementById('get-location');
-const latitudeInput = document.getElementById('latitude');
-const longitudeInput = document.getElementById('longitude');
-const photoForm = document.getElementById('photo-form');
-const photosList = document.getElementById('photos-list');
-const modal = document.getElementById('modal');
-const closeModal = document.getElementById('close-modal');
-const modalTitle = document.getElementById('modal-title');
-const modalDescription = document.getElementById('modal-description');
-const modalImage = document.getElementById('modal-image');
-const modalMap = document.getElementById('modal-map');
-let currentMap; // Variável para armazenar o mapa Leaflet
+// Select elements from the DOM
+const captureButton = document.getElementById('capture-photo'); // Capture button
+const uploadInput = document.getElementById('upload-photo'); // Upload input
+const video = document.getElementById('video'); // Video element
+const canvas = document.getElementById('canvas'); // Canvas element
+const getLocationButton = document.getElementById('get-location'); // Get location button
+const latitudeInput = document.getElementById('latitude'); // Latitude input
+const longitudeInput = document.getElementById('longitude'); // Longitude input
+const photoForm = document.getElementById('photo-form'); // Photo form
+const photosList = document.getElementById('photos-list'); // Photo list
+const modal = document.getElementById('modal'); // Modal element
+const closeModal = document.getElementById('close-modal'); // Close modal button
+const modalTitle = document.getElementById('modal-title'); // Modal title
+const modalDescription = document.getElementById('modal-description'); // Modal description
+const modalImage = document.getElementById('modal-image'); // Modal image
+const modalMap = document.getElementById('modal-map'); // Modal map
+let currentMap; // Variable to store the Leaflet map instance
+let editingPhotoId = null; // ID of the photo currently being edited
+let photos = JSON.parse(localStorage.getItem('photos')) || []; // Load photos from localStorage or initialize an empty array
+let photoData = ''; // Stores the captured or uploaded photo data
 
-let photos = JSON.parse(localStorage.getItem('photos')) || [];
-let photoData = '';
-
-// Função para iniciar a câmera
+/**
+ * Starts the camera and streams the video to a video element.
+ * 
+ * This function requests access to the user's camera and, if granted,
+ * streams the video to a video element on the page. If the camera is 
+ * not available or permission is denied, an error message is logged 
+ * and an alert is shown to the user.
+ * 
+ * @function
+ * @returns {void}
+ */
 function startCamera() {
     navigator.mediaDevices.getUserMedia({ video: true })
         .then((stream) => {
@@ -29,162 +39,213 @@ function startCamera() {
             captureButton.textContent = 'Capturar Foto';
         })
         .catch((error) => {
-            console.error('Erro ao acessar a câmera:', error);
-            alert('Câmera não disponível ou permissão negada.');
+            console.error('Error accessing the camera:', error);
+            alert('Camera not available or permission denied.');
         });
 }
 
-// Evento para abrir a câmera ou capturar a foto
+// Event to toggle between opening the camera or capturing the photo
 captureButton.addEventListener('click', () => {
     if (captureButton.textContent === 'Abrir Câmera') {
-        startCamera();
+        startCamera(); // Open the camera
     } else {
-        capturePhoto();
+        capturePhoto(); // Capture the photo
     }
 });
 
-// Função para capturar a foto
+/**
+ * Captures a photo from the video stream, draws it on a canvas, and displays the captured image.
+ * 
+ * This function performs the following steps:
+ * 1. Gets the 2D rendering context of the canvas.
+ * 2. Sets the canvas dimensions to match the video dimensions.
+ * 3. Draws the current frame from the video onto the canvas.
+ * 4. Converts the canvas content to a data URL representing the image in PNG format.
+ * 5. Stops the camera and hides the video and canvas elements.
+ * 6. Changes the capture button text to 'Abrir Câmera'.
+ * 7. Removes any previous photo preview if it exists.
+ * 8. Creates a new image element to display the captured photo.
+ * 9. Appends the new image element to the photo fieldset.
+ * 
+ * @function capturePhoto
+ */
 function capturePhoto() {
     const context = canvas.getContext('2d');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
+    // Draw the video frame on the canvas
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    photoData = canvas.toDataURL('image/png'); // Armazena a imagem capturada como uma URL de dados
+    // Convert the canvas content to a PNG image URL
+    photoData = canvas.toDataURL('image/png');
 
-    stopCamera();
+    stopCamera(); // Stop the camera
     video.hidden = true;
     canvas.hidden = true;
-    captureButton.textContent = 'Abrir Câmera';
+    captureButton.textContent = 'Abrir Câmera'; // Change button text
 
-    // Remove a prévia da foto anterior (se houver)
+    // Update photo preview
     const preview = document.querySelector('#photo-preview');
     if (preview) {
-        preview.remove();
+        preview.remove(); // Remove existing preview
     }
-
-    // Exibir uma prévia da nova foto capturada
     const imgPreview = document.createElement('img');
     imgPreview.id = 'photo-preview';
-    imgPreview.src = photoData;
-    document.querySelector('#form-section').appendChild(imgPreview);
+    imgPreview.src = photoData; // Set the new photo data
+    imgPreview.style.display = 'block';
+    document.querySelector('#photo-fieldset').appendChild(imgPreview); // Display the new preview
 }
 
-// Função para parar a câmera
+/**
+ * Stops the camera by stopping all tracks of the media stream
+ * associated with the video element and setting the video source
+ * object to null.
+ */
 function stopCamera() {
     const stream = video.srcObject;
     if (stream) {
         const tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
+        tracks.forEach(track => track.stop()); // Stop each track
         video.srcObject = null;
     }
 }
 
-// Evento para upload de foto
+// Event to handle photo upload from the file input
 uploadInput.addEventListener('change', function () {
     const file = this.files[0];
     const reader = new FileReader();
     reader.onloadend = function () {
-        photoData = reader.result;
+        photoData = reader.result; // Store the uploaded image as data URL
 
-        // Remove a prévia anterior, se existir
+        // Remove previous preview if it exists
         const preview = document.querySelector('#photo-preview');
         if (preview) {
             preview.remove();
         }
 
-        // Exibir prévia da imagem carregada via upload
+        // Display the uploaded image as preview
         const imgPreview = document.createElement('img');
         imgPreview.id = 'photo-preview';
         imgPreview.src = photoData;
         document.querySelector('#form-section').appendChild(imgPreview);
     };
     if (file) {
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file); // Convert the file to a data URL
     }
 });
 
-// Evento para obter localização
+// Event to get the user's current location
 getLocationButton.addEventListener('click', () => {
     if (navigator.geolocation) {
         getLocationButton.disabled = true;
-        getLocationButton.textContent = 'Obtendo localização...';
+        getLocationButton.textContent = 'Obtendo localização...'; // Updating button text
         navigator.geolocation.getCurrentPosition(
             (position) => {
+                // Set latitude and longitude in the form
                 latitudeInput.value = position.coords.latitude.toFixed(6);
                 longitudeInput.value = position.coords.longitude.toFixed(6);
                 getLocationButton.disabled = false;
                 getLocationButton.textContent = 'Marcar Localização Atual';
             },
             (error) => {
-                console.error('Erro ao obter localização:', error);
-                alert('Não foi possível obter a localização.');
+                console.error('Error getting location:', error);
+                alert('Could not get location.');
                 getLocationButton.disabled = false;
                 getLocationButton.textContent = 'Marcar Localização Atual';
             }
         );
     } else {
-        alert('Geolocalização não suportada neste dispositivo.');
+        alert('Geolocation is not supported on this device.');
     }
 });
 
-// Evento de submissão do formulário
+// Event handler for form submission to save the photo
 photoForm.addEventListener('submit', (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent default form submission
 
     const title = document.getElementById('title').value.trim();
     const description = document.getElementById('description').value.trim();
     const latitude = parseFloat(latitudeInput.value);
     const longitude = parseFloat(longitudeInput.value);
 
-    // Validação dos campos
+    // Validate form fields
     if (!title) {
-        alert('O título é obrigatório.');
+        alert('Title is required.');
         return;
     }
 
     if (!photoData) {
-        alert('Por favor, capture ou faça upload de uma foto.');
+        alert('Please capture or upload a photo.');
         return;
     }
 
     if (isNaN(latitude) || isNaN(longitude)) {
-        alert('Por favor, forneça coordenadas de localização válidas.');
+        alert('Please provide valid location coordinates.');
         return;
     }
 
-    const newPhoto = {
-        id: Date.now(),
-        title,
-        description,
-        photoData,
-        latitude,
-        longitude,
-        date: new Date().toLocaleString(),
-    };
+    // Update existing photo if editing, otherwise create a new one
+    if (editingPhotoId !== null) {
+        const photoIndex = photos.findIndex(photo => photo.id === editingPhotoId);
+        if (photoIndex !== -1) {
+            photos[photoIndex] = {
+                id: editingPhotoId,
+                title,
+                description,
+                photoData,
+                latitude,
+                longitude,
+                date: new Date().toLocaleString(),
+            };
+        }
+        editingPhotoId = null; // Reset editing ID
 
-    photos.push(newPhoto);
-    localStorage.setItem('photos', JSON.stringify(photos));
-    renderPhotos();
-    photoForm.reset();
-    photoData = '';
-    canvas.hidden = true;
+        alert('Foto atualizada com sucesso!');
+    } else {
+        const newPhoto = {
+            id: Date.now(),
+            title,
+            description,
+            photoData,
+            latitude,
+            longitude,
+            date: new Date().toLocaleString(),
+        };
 
-    // Remove a prévia da foto após salvar
-    const preview = document.querySelector('#photo-preview');
-    if (preview) {
-        preview.remove();
+        photos.push(newPhoto); // Add new photo
+
+        alert('Foto salva com sucesso!');
     }
 
-    alert('Foto salva com sucesso!');
+    localStorage.setItem('photos', JSON.stringify(photos)); // Save to localStorage
+    renderPhotos(); // Update the photo list
+    photoForm.reset(); // Reset the form
+    photoData = ''; // Reset photo data
+    canvas.hidden = true;
+
+    // Hide the photo preview
+    const imgPreview = document.getElementById('photo-preview');
+    imgPreview.style.display = 'none';
 });
 
-// Função para exibir as fotos na lista
+/**
+ * Renders a list of photos to the DOM.
+ * 
+ * This function clears the current content of the `photosList` element and 
+ * populates it with photo cards based on the `photos` array. Each photo card 
+ * includes the photo, title, description, date, and action buttons for viewing, 
+ * editing, and deleting the photo.
+ * 
+ * If there are no photos in the `photos` array, a message indicating that no 
+ * photos are registered is displayed.
+ * 
+ * @function
+ */
 function renderPhotos() {
     photosList.innerHTML = '';
 
     if (photos.length === 0) {
-        photosList.innerHTML = '<p>Não há fotos cadastradas.</p>';
+        photosList.innerHTML = '<p>No photos registered.</p>';
         return;
     }
 
@@ -192,92 +253,114 @@ function renderPhotos() {
         const photoCard = document.createElement('div');
         photoCard.classList.add('photo-card');
 
+        // Build the photo card
         photoCard.innerHTML = `
-      <img src="${photo.photoData}" alt="${photo.title}" />
-      <div class="photo-details">
-        <h3>${photo.title}</h3>
-        <p>${photo.description || 'Sem descrição'}</p>
-        <p><strong>Data:</strong> ${photo.date}</p>
-        <div class="photo-actions">
-          <button data-id="${photo.id}" class="view-button">Visualizar</button>
-          <button data-id="${photo.id}" class="edit-button">Editar</button>
-          <button data-id="${photo.id}" class="delete-button">Excluir</button>
-        </div>
-      </div>
-    `;
-
-        photosList.appendChild(photoCard);
+          <img src="${photo.photoData}" alt="${photo.title}" />
+          <div class="photo-details">
+            <h3>${photo.title}</h3>
+            <p>${photo.description || 'Sem descrição'}</p>
+            <p><strong>Data:</strong> ${photo.date}</p>
+            <div class="photo-actions">
+              <button data-id="${photo.id}" class="view-button">Visualizar</button>
+              <button data-id="${photo.id}" class="edit-button">Editar</button>
+              <button data-id="${photo.id}" class="delete-button">Excluir</button>
+            </div>
+          </div>
+        `;
+        photosList.appendChild(photoCard); // Append each photo card
     });
 }
 
-// Carregar as fotos ao iniciar
+// Load and display photos on page load
 renderPhotos();
 
-// Função para visualizar e editar fotos
+/**
+ * Handles events for viewing, editing, and deleting photos.
+ * 
+ * Depending on the button clicked, this function either:
+ * - Displays the modal to view photo details.
+ * - Fills the form with photo details for editing.
+ * - Deletes the photo and updates the list.
+ */
 document.addEventListener('click', (event) => {
-    const id = event.target.dataset.id; // Obtém o ID da foto a partir do atributo data-id
+    const id = event.target.dataset.id; // Get the photo ID from the clicked button
 
-    // Visualizar Foto
+    // View Photo
     if (event.target.classList.contains('view-button')) {
-        const photo = photos.find((p) => p.id == id); // Busca a foto pelo ID no array
+        const photo = photos.find((p) => p.id == id); // Find the photo by ID
 
-        // Preenche os elementos da modal com os dados da foto
+        // Populate the modal with the photo details
         modalTitle.textContent = photo.title;
         modalDescription.textContent = photo.description;
         modalImage.src = photo.photoData;
         modalImage.alt = photo.title;
 
-        // Exibir mapa usando Leaflet.js
+        // Initialize the map with the photo's location
         if (currentMap) {
-            currentMap.remove(); // Remove o mapa anterior, se houver
+            currentMap.remove(); // Remove existing map if present
         }
 
-        modalMap.innerHTML = ''; // Limpa o conteúdo anterior do mapa
-        currentMap = L.map(modalMap).setView([photo.latitude, photo.longitude], 13); // Centraliza o mapa na localização da foto
+        modalMap.innerHTML = ''; // Clear previous map content
+        currentMap = L.map(modalMap).setView([photo.latitude, photo.longitude], 13); // Set view to photo location
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors',
-        }).addTo(currentMap); // Adiciona as camadas de mapa do OpenStreetMap
-        L.marker([photo.latitude, photo.longitude]).addTo(currentMap); // Adiciona um marcador no local da foto
+        }).addTo(currentMap); // Add map tiles
+        L.marker([photo.latitude, photo.longitude]).addTo(currentMap); // Add a marker at the photo's location
 
-        modal.style.display = 'block'; // Exibe a modal
-        modal.setAttribute('aria-hidden', 'false'); // Acessibilidade: remove o atributo que oculta a modal
+        setTimeout(() => {
+            currentMap.invalidateSize(); // Ensure the map renders correctly
+        }, 300);
+
+        modal.style.display = 'block'; // Show the modal
+        modal.setAttribute('aria-hidden', 'false');
     }
 
-    // Editar Foto
+    // Edit Photo
     else if (event.target.classList.contains('edit-button')) {
-        const photo = photos.find((p) => p.id == id); // Busca a foto pelo ID no array
+        const photo = photos.find((p) => p.id == id); // Find the photo by ID
 
-        // Preenche o formulário com os dados existentes da foto
+        // Populate the form with the existing photo details
         document.getElementById('title').value = photo.title;
         document.getElementById('description').value = photo.description;
         latitudeInput.value = photo.latitude;
         longitudeInput.value = photo.longitude;
-        photoData = photo.photoData;
+        photoData = photo.photoData; // Keep the existing photo data
+        editingPhotoId = photo.id; // Store the ID of the photo being edited
 
-        // Exibir a foto original na prévia ao editar
+        // Show the existing photo in the preview
         const preview = document.querySelector('#photo-preview');
         if (preview) {
-            preview.remove(); // Remove a prévia anterior, se existir
+            preview.remove(); // Remove previous preview
         }
         const imgPreview = document.createElement('img');
         imgPreview.id = 'photo-preview';
-        imgPreview.src = photo.photoData; // Exibe a mesma foto no formulário para edição
-        document.querySelector('#form-section').appendChild(imgPreview);
+        imgPreview.src = photo.photoData; // Show the existing photo
+        imgPreview.style.display = 'block';
+        document.querySelector('#photo-fieldset').appendChild(imgPreview);
+    }
 
-        // Remover a foto original da lista para que a edição seja salva como um novo registro
-        photos = photos.filter((p) => p.id != id); // Remove o registro da foto a ser editada
-        localStorage.setItem('photos', JSON.stringify(photos)); // Atualiza o localStorage com a nova lista sem a foto antiga
-        renderPhotos(); // Atualiza a lista de fotos renderizada
+    // Delete Photo
+    else if (event.target.classList.contains('delete-button')) {
+        const confirmDelete = confirm('Você tem certeza que deseja excluir esta foto?');
+        if (confirmDelete) {
+            // Remove the photo from the array
+            photos = photos.filter((p) => p.id != id);
+
+            // Update localStorage and refresh the photo list
+            localStorage.setItem('photos', JSON.stringify(photos));
+            renderPhotos(); // Re-render the photo list
+            alert('Foto deletada com sucesso!');
+        }
     }
 });
 
-// Fechar a modal ao clicar no botão de fechar
+// Close the modal when the close button is clicked
 closeModal.addEventListener('click', () => {
-    modal.style.display = 'none'; // Oculta a modal
-    modal.setAttribute('aria-hidden', 'true'); // Acessibilidade: adiciona o atributo que oculta a modal
+    modal.style.display = 'none'; // Hide the modal
+    modal.setAttribute('aria-hidden', 'true');
 });
 
-// Fechar a modal ao clicar fora do conteúdo da modal
+// Close the modal when clicking outside of the modal content
 window.addEventListener('click', (event) => {
     if (event.target == modal) {
         modal.style.display = 'none';
