@@ -1,0 +1,114 @@
+/* Reset básico */
+* {
+  margin: 0; /* Remove a margem padrão de todos os elementos */
+  padding: 0; /* Remove o preenchimento padrão de todos os elementos */
+  box-sizing: border-box; /* Inclui bordas e preenchimento no cálculo da largura e altura */
+}
+
+/* Fonte padrão */
+body {
+  font-family: 'Roboto', sans-serif; /* Define a fonte padrão como Roboto */
+  background-color: #f7f7f7; /* Define a cor de fundo do corpo da página */
+  color: #333; /* Define a cor do texto */
+  line-height: 1.6; /* Define a altura da linha para melhorar a legibilidade */
+}
+
+/* Estilos do Header */
+header {
+  background-color: #333; /* Define a cor de fundo do cabeçalho */
+  color: #fff; /* Define a cor do texto do cabeçalho */
+  padding: 20px 0; /* Adiciona preenchimento vertical ao cabeçalho */
+  text-align: center; /* Centraliza o texto no cabeçalho */
+}
+
+/* Estilos do Main */
+main {
+  max-width: 800px; /* Define a largura máxima do conteúdo principal */
+  margin: 20px auto; /* Centraliza o conteúdo principal horizontalmente e adiciona margem vertical */
+  padding: 0 20px; /* Adiciona preenchimento horizontal ao conteúdo principal */
+}
+
+/* Estilos do Formulário */
+form {
+  display: flex; /* Define o layout do formulário como flexível */
+  flex-wrap: wrap; /* Permite que os itens do formulário quebrem para a próxima linha */
+  gap: 10px; /* Adiciona um espaço entre os itens do formulário */
+  margin-bottom: 20px; /* Adiciona uma margem inferior ao formulário */
+}
+
+form label {
+  flex: 1 1 100%; /* Faz com que os rótulos ocupem 100% da largura disponível */
+}
+
+form input,
+form select {
+  flex: 1 1 100%; /* Faz com que os campos de entrada e seleção ocupem 100% da largura disponível */
+  padding: 8px; /* Adiciona preenchimento interno aos campos */
+  margin-bottom: 10px; /* Adiciona uma margem inferior aos campos */
+}
+
+form button {
+  padding: 10px 20px; /* Adiciona preenchimento interno ao botão */
+  background-color: #0066cc; /* Define a cor de fundo do botão */
+  color: #fff; /* Define a cor do texto do botão */
+  border: none; /* Remove a borda do botão */
+  cursor: pointer; /* Altera o cursor para indicar que o botão é clicável */
+}
+
+form button:hover {
+  background-color: #005bb5; /* Altera a cor de fundo do botão ao passar o mouse */
+}
+
+/* Estilos da Seção de Imagens */
+#images-section {
+  display: grid; /* Define o layout da seção de imagens como uma grade */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Define as colunas da grade */
+  gap: 15px; /* Adiciona um espaço entre os itens da grade */
+}
+
+.image-card {
+  background-color: #fff; /* Define a cor de fundo do cartão de imagem */
+  border: 1px solid #ddd; /* Adiciona uma borda ao cartão de imagem */
+  border-radius: 5px; /* Adiciona cantos arredondados ao cartão de imagem */
+  overflow: hidden; /* Oculta o conteúdo que ultrapassa os limites do cartão */
+}
+
+.image-card img {
+  width: 100%; /* Faz com que a imagem ocupe 100% da largura do cartão */
+  display: block; /* Exibe a imagem como um bloco */
+}
+
+.image-card .image-actions {
+  display: flex; /* Define o layout das ações da imagem como flexível */
+  justify-content: space-between; /* Distribui as ações igualmente ao longo do eixo principal */
+  padding: 10px; /* Adiciona preenchimento interno às ações da imagem */
+}
+
+.image-card .image-actions button {
+  padding: 5px 10px; /* Adiciona preenchimento interno aos botões de ação */
+  background-color: #0066cc; /* Define a cor de fundo dos botões de ação */
+  color: #fff; /* Define a cor do texto dos botões de ação */
+  border: none; /* Remove a borda dos botões de ação */
+  cursor: pointer; /* Altera o cursor para indicar que os botões são clicáveis */
+  font-size: 14px; /* Define o tamanho da fonte dos botões de ação */
+}
+
+.image-card .image-actions button:hover {
+  background-color: #005bb5; /* Altera a cor de fundo dos botões de ação ao passar o mouse */
+}
+
+/* Estilos do Footer */
+footer {
+  background-color: #333; /* Define a cor de fundo do rodapé */
+  color: #fff; /* Define a cor do texto do rodapé */
+  text-align: center; /* Centraliza o texto no rodapé */
+  padding: 10px 0; /* Adiciona preenchimento vertical ao rodapé */
+  margin-top: 20px; /* Adiciona uma margem superior ao rodapé */
+}
+
+/* Acessibilidade: Foco Visível */
+button:focus,
+input:focus,
+select:focus {
+  outline: 2px solid #005bb5; /* Adiciona um contorno visível aos elementos focados */
+}

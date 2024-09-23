@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<!-- Define o tipo de documento e o idioma como português do Brasil -->
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- Define a codificação de caracteres como UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Configura a viewport para garantir que a página seja responsiva -->
+  <title>Gerador de Imagens Aleatórias</title>
+  <!-- Define o título da página -->
+  <meta name="description" content="Sistema web para gerar imagens aleatórias usando a API picsum.photos" />
+  <!-- Adiciona uma descrição da página -->
+  <meta name="author" content="Thales" />
+  <!-- Define o autor da página -->
+  <!-- Link para o CSS -->
+  <link rel="stylesheet" href="reset.css">
+  <!-- Link para o arquivo CSS de reset -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Link para o arquivo CSS de estilos -->
+  <!-- Fonte externa -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <!-- Link para a fonte externa Roboto do Google Fonts -->
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <!-- Link para o favicon da página -->
+</head>
+
+<body>
+  <header>
+    <h1>Gerador de Imagens Aleatórias</h1>
+    <!-- Cabeçalho da página com o título principal -->
+  </header>
+  <main>
+    <form id="image-form">
+      <!-- Formulário para gerar imagens -->
+      <label for="width">Largura (px):</label>
+      <!-- Rótulo para o campo de largura -->
+      <input type="number" id="width" name="width" min="1" value="300" required />
+      <!-- Campo de entrada para a largura da imagem -->
+
+      <label for="height">Altura (px):</label>
+      <!-- Rótulo para o campo de altura -->
+      <input type="number" id="height" name="height" min="1" value="200" required />
+      <!-- Campo de entrada para a altura da imagem -->
+
+      <label for="quantity">Quantidade de Imagens:</label>
+      <!-- Rótulo para o campo de quantidade -->
+      <select id="quantity" name="quantity" required>
+        <!-- Campo de seleção para a quantidade de imagens -->
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+      </select>
+
+      <button type="submit">Gerar Imagens</button>
+      <!-- Botão para submeter o formulário e gerar as imagens -->
+    </form>
+
+    <section id="images-section" aria-live="polite">
+      <!-- Seção onde as imagens geradas serão exibidas -->
+      <!-- As imagens serão inseridas aqui -->
+    </section>
+  </main>
+  <footer>
+    <p>© Thales 2024</p>
+    <!-- Rodapé da página com os direitos autorais -->
+  </footer>
+  <script src="main.js"></script>
+  <!-- Link para o arquivo JavaScript principal -->
+</body>
+
+</html>
