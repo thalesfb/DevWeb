@@ -38,7 +38,7 @@ The `healthcheck.sh` script is used to check the health of the NGINX service.
 The `erp_ssl.conf` file contains the NGINX configuration for the ERP with SSL support.
 
 - **upstream**: Defines the upstream servers for `backend` and `genesis`.
-- **server**: Server configurations for `cpel.ind.br` and `erp.cpel.ind.br`.
+- **server**: Server configurations for `erp.cpel.ind.br`.
   - **Port 80**: Redirects to HTTPS.
   - **Port 443**: SSL configurations, including certificates and specific locations for `api`, `genesis`, and frontend.
 
