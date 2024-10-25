@@ -1,0 +1,562 @@
+/* Estilo geral do body, definindo a fonte, cores e espaçamento para todo o conteúdo da página */
+body {
+  font-family: 'Roboto', sans-serif; /* Fonte padrão para o texto */
+  background-color: #f9f9f9; /* Cor de fundo suave */
+  color: #333; /* Cor do texto principal, cinza escuro para boa legibilidade */
+  line-height: 1.6; /* Espaçamento entre linhas para melhorar a legibilidade */
+  display: flex; /* Define o body como um container flexível */
+  flex-direction: column; /* Organiza os elementos do body na vertical */
+}
+
+/* Garantir que o HTML e body ocupem toda a altura da tela */
+html,
+body {
+  height: 100%;
+}
+
+/* O elemento main se expande para preencher todo o espaço restante do container */
+main {
+  flex: 1;
+}
+
+/* Estilo para o cabeçalho da página */
+.header {
+  background-color: #4caf50; /* Cor de fundo verde */
+  color: #fff; /* Cor do texto branco */
+  padding: 20px; /* Espaçamento interno do cabeçalho */
+  text-align: center; /* Centraliza o texto */
+  display: flex;
+}
+
+/* Estilo do título no cabeçalho */
+.header h1 {
+  font-size: 32px; /* Tamanho da fonte do título */
+  margin: 0 auto; /* Centraliza o título horizontalmente */
+}
+
+/* Estilo para o menu de navegação */
+#menu ul {
+  list-style-type: none; /* Remove os marcadores de lista */
+  display: flex; /* Organiza os itens em linha */
+  justify-content: center; /* Centraliza os itens */
+  margin-top: 10px;
+}
+
+/* Espaçamento entre os itens do menu */
+#menu li {
+  margin: 0 15px;
+}
+
+/* Estilo dos links do menu */
+#menu li a {
+  color: #fff; /* Cor branca para os links */
+  text-decoration: none; /* Remove sublinhado dos links */
+  font-size: 18px;
+}
+
+/* Cor ao passar o mouse sobre os links do menu */
+#menu li a:hover {
+  color: #ccc;
+}
+
+/* Seção de busca e filtros */
+.search-filters {
+  display: flex; /* Flexbox para organizar filtros */
+  flex-wrap: wrap; /* Permite quebra de linha para filtros */
+  justify-content: center; /* Centraliza os filtros */
+  padding: 20px;
+  gap: 10px; /* Espaçamento entre filtros */
+}
+
+/* Estilo para os campos de busca e filtros */
+.search-filters input,
+.search-filters select {
+  padding: 10px; /* Espaçamento interno dos campos */
+  font-size: 16px; /* Tamanho da fonte nos campos */
+}
+
+/* Largura dos campos de busca */
+.search-filters input {
+  width: 100%;
+  max-width: 300px; /* Limite máximo de largura */
+}
+
+/* Largura dos seletores de filtros */
+.search-filters select {
+  width: 150px;
+}
+
+/* Ajustes específicos nos filtros de categoria e marca */
+#category-filter,
+#brand-filter {
+  width: 200px; /* Define uma largura fixa */
+  padding: 10px;
+  font-size: 16px;
+}
+
+/* Estilo da lista de produtos */
+#product-list {
+  display: flex;
+  flex-wrap: wrap; /* Produtos podem quebrar linha */
+  justify-content: center; /* Centraliza a lista de produtos */
+  padding: 20px;
+  gap: 20px; /* Espaçamento entre os produtos */
+}
+
+/* Estilo para cada item de produto */
+.product-item {
+  background-color: #fff; /* Fundo branco para cada produto */
+  border: 1px solid #ddd; /* Borda sutil ao redor do produto */
+  border-radius: 5px; /* Cantos arredondados */
+  width: 250px; /* Largura fixa do item */
+  text-align: center;
+  padding: 15px; /* Espaçamento interno */
+}
+
+/* Estilo da imagem do produto */
+.product-item img {
+  max-width: 100%; /* A imagem não ultrapassa a largura do container */
+  height: auto; /* Mantém a proporção da imagem */
+}
+
+/* Estilo do título do produto */
+.product-item h2 {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+/* Estilo do texto do produto */
+.product-item p {
+  margin: 5px 0;
+}
+
+/* Estilo dos botões do produto */
+.product-item button {
+  background-color: #4caf50; /* Botão verde */
+  color: #fff; /* Texto branco */
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  margin: 5px 0;
+  width: 100%; /* Ocupa toda a largura do container */
+  font-size: 16px;
+}
+
+/* Cor do botão ao passar o mouse */
+.product-item button:hover {
+  background-color: #45a049;
+}
+
+/* Estilo para o modal de checkout */
+#checkout-modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  max-width: 600px; /* Limita a largura do modal */
+  width: 90%; /* O modal ocupa 90% da largura da tela */
+  box-sizing: border-box; /* Inclui padding na largura total */
+  background-color: #fff; /* Fundo branco para garantir que não fique transparente */
+  position: relative;
+}
+
+/* Botão de fechar modal de checkout */
+#checkout-modal .close-modal-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Cor ao passar o mouse no botão de fechar modal de checkout */
+#checkout-modal .close-modal-btn:hover {
+  color: #000;
+}
+
+/* Estilo dos campos dentro do modal de checkout */
+#checkout-modal input,
+#checkout-modal select {
+  width: 100%; /* Ocupa toda a largura do modal */
+  margin-bottom: 15px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* Botão de checkout dentro do modal */
+#checkout-button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  cursor: pointer;
+  width: 50%; /* Metade da largura do modal */
+  font-size: 18px;
+  margin-top: 20px;
+  align-self: center; /* Centraliza o botão no modal */
+}
+
+/* Cor do botão de checkout ao passar o mouse */
+#checkout-button:hover {
+  background-color: #45a049;
+}
+
+/* Estilo para os modais de confirmação de remoção */
+#confirm-remove-modal .modal-content {
+  padding: 20px;
+  width: 300px; /* Define largura do modal */
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff; /* Fundo branco para garantir que não fique transparente */
+  position: relative;
+}
+
+/* Botão de fechar modal de confirmação de remoção */
+#confirm-remove-modal .close-modal-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Cor ao passar o mouse no botão de fechar modal de confirmação de remoção */
+#confirm-remove-modal .close-modal-btn:hover {
+  color: #000;
+}
+
+/* Texto dentro do modal de confirmação */
+#confirm-remove-modal p {
+  text-align: center;
+}
+
+/* Botão de confirmação de remoção */
+#confirm-remove-modal #confirm-remove-button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 5px;
+}
+
+/* Cor do botão ao passar o mouse */
+#confirm-remove-modal #confirm-remove-button:hover {
+  background-color: #45a049;
+  color: #000;
+}
+
+/* Botão de cancelar remoção */
+#cancel-remove-button {
+  background-color: #f44336; /* Botão vermelho */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 5px;
+}
+
+/* Cor do botão de cancelar ao passar o mouse */
+#cancel-remove-button:hover {
+  background-color: #e53935;
+  color: #000;
+}
+
+/* Estilo geral dos modais */
+.modal {
+  display: none; /* Modal inicialmente oculto */
+  position: fixed; /* Fixa o modal em relação à viewport */
+  z-index: 10;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Fundo semi-transparente */
+  overflow-y: auto;
+}
+
+/* Exibição do modal quando ativo */
+.modal.show {
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+}
+
+/* Estilo do conteúdo do modal */
+.product-modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  background-color: #fff;
+  border-radius: 5px;
+  max-height: 90vh;
+  overflow-y: auto;
+  height: auto;
+}
+
+/* Botão de fechar modal de produto */
+.product-modal .close-modal-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Cor ao passar o mouse no botão de fechar modal de produto */
+.product-modal .close-modal-btn:hover {
+  color: #000;
+}
+
+/* Estilo do contêiner de imagem do produto no modal */
+.product-image-container {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 20px;
+}
+
+/* Imagem do produto no modal */
+.product-image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Botão de compra dentro do modal de produto */
+#product-details button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  font-size: 18px;
+  margin-top: 20px;
+  align-self: center;
+}
+
+/* Cor do botão ao passar o mouse no modal de produto */
+#product-details button:hover {
+  background-color: #45a049;
+}
+
+/* Estilo do modal do carrinho de compras */
+#cart-modal .modal-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 600px;
+  background-color: #fff; /* Fundo branco para garantir que não fique transparente */
+  position: relative;
+}
+
+/* Botão de fechar modal do carrinho de compras */
+#cart-modal .close-modal-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Cor ao passar o mouse no botão de fechar modal do carrinho de compras */
+#cart-modal .close-modal-btn:hover {
+  color: #000;
+}
+
+/* Lista de itens do carrinho */
+#cart-items {
+  flex: 1;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Estilo de cada item do carrinho */
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Input para quantidade do item no carrinho */
+.cart-item input {
+  width: 50px;
+  text-align: center;
+}
+
+/* Total do carrinho */
+#cart-total {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+/* Botão de checkout no modal do carrinho */
+#checkout-button {
+  margin-top: auto;
+  background-color: #ff9800; /* Cor laranja */
+  color: #fff;
+  border: none;
+  padding: 15px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+  align-self: center;
+}
+
+/* Cor do botão de checkout ao passar o mouse */
+#checkout-button:hover {
+  background-color: #f57c00;
+}
+
+/* Botão de remover item do carrinho */
+.cart-item button {
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Cor do botão de remover item ao passar o mouse */
+.cart-item button:hover {
+  background-color: #e53935;
+}
+
+/* Estilo do formulário de checkout */
+#checkout-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: auto;
+}
+
+/* Label dos campos do formulário de checkout */
+#checkout-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Campos de entrada e seleção no formulário de checkout */
+#checkout-form input,
+#checkout-form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+/* Botão do formulário de checkout */
+#checkout-form button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  font-size: 18px;
+  align-self: center;
+}
+
+/* Cor do botão de checkout ao passar o mouse */
+#checkout-form button:hover {
+  background-color: #45a049;
+}
+
+/* Estilo do rodapé da página */
+.footer {
+  background-color: #4caf50;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+}
+
+/* Parágrafos no rodapé */
+.footer p {
+  margin: 5px 0;
+}
+
+/* Links no rodapé */
+.footer a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+/* Cor do link ao passar o mouse no rodapé */
+.footer a:hover {
+  color: #ccc;
+}
+
+/* Estilo responsivo para telas menores */
+@media (max-width: 600px) {
+  .footer {
+    font-size: 14px; /* Ajusta o tamanho do texto no rodapé */
+  }
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+  .product-item {
+    width: 100%;
+    max-width: 300px;
+  }
+  .modal-content {
+    width: 100%;
+    max-width: none;
+    border-radius: 0;
+    height: 100%;
+    max-height: none;
+  }
+  .product-modal .modal-content {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    max-height: none;
+  }
+  .product-image-container {
+    max-width: 100%;
+  }
+  #product-details button {
+    max-width: 100%;
+  }
+  #category-filter,
+  #brand-filter {
+    width: 100%; /* Filtros ocupam toda a largura em dispositivos móveis */
+    max-width: none;
+  }
+}

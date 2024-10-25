@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loja de Informática</title>
+  <meta name="description" content="E-commerce de produtos de informática" />
+  <meta name="author" content="Thales" />
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" />
+  <!-- Fonte Externa do Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <!-- link para o reset de estilo CSS, usado para padronizar o comportamento dos elementos em diferentes navegadores -->
+  <link rel="stylesheet" href="reset.css" />
+  <!-- Link para o CSS principal da aplicação -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Biblioteca Font Awesome para ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+
+<body>
+  <!-- Cabeçalho da página com o título e menu de navegação -->
+  <header class="header">
+    <h1>Loja de Informática</h1>
+    <nav id="menu">
+      <ul>
+        <!-- Link para a página inicial -->
+        <li><a href="#" id="home-link"><i class="fas fa-home"></i> </a></li>
+        <!-- Link para o carrinho de compras com contador de itens -->
+        <li><a href="#" id="cart-link"><i class="fas fa-shopping-cart"></i> (<span id="cart-count">0</span>)</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Seção de Busca e Filtros -->
+    <section class="search-filters">
+      <!-- Barra de pesquisa para procurar produtos -->
+      <input type="text" id="search-bar" placeholder="Pesquisar produtos..." aria-label="Pesquisar produtos" />
+      <!-- Filtro por categoria -->
+      <select id="category-filter" aria-label="Filtrar por categoria">
+        <option value="">Todas as Categorias</option>
+        <!-- Opções adicionadas dinamicamente -->
+      </select>
+      <!-- Filtro por marca -->
+      <select id="brand-filter" aria-label="Filtrar por marca">
+        <option value="">Todas as Marcas</option>
+        <!-- Opções adicionadas dinamicamente -->
+      </select>
+    </section>
+
+    <!-- Lista de Produtos -->
+    <section id="product-list" aria-label="Lista de produtos">
+      <!-- Produtos serão inseridos dinamicamente aqui -->
+    </section>
+
+    <!-- Modal de Detalhes do Produto -->
+    <div id="product-modal" class="modal product-modal" aria-hidden="true" role="dialog"
+      aria-labelledby="product-modal-title" tabindex="-1">
+      <div class="modal-content">
+        <!-- Botão para fechar o modal -->
+        <button id="close-product-modal" class="close-modal-btn"
+          aria-label="Fechar detalhes do produto">&times;</button>
+        <div id="product-details">
+          <!-- Detalhes do produto serão inseridos dinamicamente -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal do Carrinho de Compras -->
+    <div id="cart-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="cart-modal-title">
+      <div class="modal-content">
+        <!-- Botão para fechar o modal do carrinho -->
+        <button id="close-cart-modal" class="close-modal-btn" aria-label="Fechar carrinho">&times;</button>
+        <h2 id="cart-modal-title">Carrinho de Compras</h2>
+        <div id="cart-items" role="list" aria-labelledby="cart-items-title"></div>
+        <!-- Itens do carrinho serão inseridos dinamicamente -->
+        <p id="cart-total" role="contentinfo">Total: R$ 0,00</p>
+        <!-- Botão para finalizar a compra -->
+        <button id="checkout-button">Finalizar Compra</button>
+      </div>
+    </div>
+
+    <!-- Modal de Confirmação de Remoção -->
+    <div id="confirm-remove-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="confirm-remove-title"
+      tabindex="-1">
+      <div class="modal-content">
+        <!-- Botão para fechar o modal de confirmação de remoção -->
+        <button class="close-modal-btn" aria-label="Fechar confirmação">&times;</button>
+        <h2 id="confirm-remove-title">Remover Item</h2>
+        <p>Tem certeza de que deseja remover este item do carrinho?</p>
+        <!-- Botão para confirmar a remoção -->
+        <button id="confirm-remove-button" aria-label="Confirmar remoção">Confirmar</button>
+        <!-- Botão para cancelar a remoção -->
+        <button id="cancel-remove-button" aria-label="Cancelar remoção">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Modal de Confirmação de Finalização da Compra -->
+    <div id="confirm-checkout-modal" class="modal" aria-hidden="true" role="dialog"
+      aria-labelledby="confirm-checkout-title" tabindex="-1">
+      <div class="modal-content">
+        <!-- Botão para fechar o modal de confirmação de compra -->
+        <button class="close-modal-btn" aria-label="Fechar confirmação">&times;</button>
+        <h2 id="confirm-checkout-title">Confirmar Compra</h2>
+        <p>Tem certeza de que deseja finalizar a compra?</p>
+        <!-- Botão para confirmar a compra -->
+        <button id="confirm-checkout-button" aria-label="Confirmar compra">Confirmar</button>
+        <!-- Botão para cancelar a compra -->
+        <button id="cancel-checkout-button" aria-label="Cancelar compra">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Modal de Checkout -->
+    <div id="checkout-modal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <!-- Botão para fechar o modal de checkout -->
+        <button id="close-checkout-modal" class="close-modal-btn" aria-label="Fechar checkout">&times;</button>
+        <h2 id="checkout-modal-title">Finalizar Compra</h2>
+        <form id="checkout-form">
+          <!-- Campo para inserir o nome completo do cliente -->
+          <label for="name">Nome Completo:</label>
+          <input type="text" id="name" name="name" required aria-required="true" />
+          <!-- Campo para inserir o endereço do cliente -->
+          <label for="address">Endereço:</label>
+          <input type="text" id="address" name="address" required aria-required="true" />
+          <!-- Campo para selecionar a forma de pagamento -->
+          <label for="payment">Forma de Pagamento:</label>
+          <select id="payment" name="payment" required aria-required="true">
+            <option value="">Selecione</option>
+            <option value="credit">Cartão de Crédito</option>
+            <option value="debit">Cartão de Débito</option>
+            <option value="paypal">PayPal</option>
+          </select>
+          <!-- Botão para confirmar a compra no formulário -->
+          <button type="submit">Confirmar Compra</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Rodapé da página com informações adicionais -->
+  <footer class="footer">
+    <p>&copy; 2024 Loja de Informática</p>
+    <p>Formas de Pagamento: Visa, MasterCard, PayPal</p>
+    <p>Siga-nos nas redes sociais:
+      <!-- Links para redes sociais com ícones correspondentes -->
+      <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i> </a>
+      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i> </a>
+      <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i> </a>
+    </p>
+  </footer>
+
+  <!-- Script JavaScript principal da aplicação -->
+  <script src="main.js"></script>
+</body>
+
+</html>
