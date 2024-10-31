@@ -22,13 +22,13 @@ Este projeto é um servidor web desenvolvido em Node.js e Express para gerenciar
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/seu-usuario/receitas-api.git
+   git clone https://github.com/thalesfb/DevWeb.git
    ```
 
 2. Navegue até o diretório do projeto:
 
    ```bash
-   cd receitas-api
+   cd recipes-api
    ```
 
 3. Instale as dependências:
