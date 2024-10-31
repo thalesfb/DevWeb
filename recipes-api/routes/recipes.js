@@ -34,13 +34,23 @@ router.get('/:id', (req, res) => {
  * Adiciona uma nova receita
  */
 router.post('/', (req, res) => {
-  const { name, ingredients, type } = req.body;
+  const {
+    titulo,
+    ingredientes,
+    instrucoes,
+    tempoPreparo,
+    tipoPrato
+  } = req.body;
+
   const newRecipe = {
     id: recipes.length + 1,
-    name,
-    ingredients,
-    type
+    titulo,
+    ingredientes,
+    instrucoes,
+    tempoPreparo,
+    tipoPrato
   };
+
   recipes.push(newRecipe);
   res.status(201).json(newRecipe);
 });
@@ -51,10 +61,24 @@ router.post('/', (req, res) => {
  */
 router.put('/:id', (req, res) => {
   const id = parseInt(req.params.id);
-  const { name, ingredients, type } = req.body;
+  const {
+    titulo,
+    ingredientes,
+    instrucoes,
+    tempoPreparo,
+    tipoPrato
+  } = req.body;
+
   const index = recipes.findIndex(r => r.id === id);
   if (index !== -1) {
-    recipes[index] = { id, name, ingredients, type };
+    recipes[index] = {
+      id,
+      titulo,
+      ingredientes,
+      instrucoes,
+      tempoPreparo,
+      tipoPrato
+    };
     res.json(recipes[index]);
   } else {
     res.status(404).json({ message: 'Receita não encontrada' });
@@ -80,23 +104,23 @@ router.delete('/:id', (req, res) => {
 
 /**
  * GET /recipes/search
- * Pesquisa receitas por ingrediente ou tipo
+ * Pesquisa receitas por ingrediente ou tipo de prato
  * Exemplos:
- *   /recipes/search?ingredient=chocolate
- *   /recipes/search?type=sobremesa
+ *   /recipes/search?ingrediente=Chocolate
+ *   /recipes/search?tipoPrato=Sobremesa
  */
 router.get('/search', (req, res) => {
-  const { ingredient, type } = req.query;
+  const { ingrediente, tipoPrato } = req.query;
   let results = recipes;
 
-  if (ingredient) {
+  if (ingrediente) {
     results = results.filter(recipe =>
-      recipe.ingredients.includes(ingredient)
+      recipe.ingredientes.includes(ingrediente)
     );
   }
 
-  if (type) {
-    results = results.filter(recipe => recipe.type === type);
+  if (tipoPrato) {
+    results = results.filter(recipe => recipe.tipoPrato === tipoPrato);
   }
 
   res.json(results);
