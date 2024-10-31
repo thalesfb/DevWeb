@@ -119,35 +119,42 @@ O servidor estará rodando em `http://localhost:3000`.
 
 ## Exemplos de Uso
 
-- **Listar todas as receitas**: 
+- **Listar todas as receitas**:
+
   ```bash
   curl http://localhost:3000/recipes
   ```
-- **Obter uma receita específica**: 
+- **Obter uma receita específica**:
+
   ```bash
   curl http://localhost:3000/recipes/1
   ```
 - **Adicionar uma receita**:
+
   ```bash
   curl -X POST http://localhost:3000/recipes \
   -H "Content-Type: application/json" \
   -d '{"titulo": "Bolo de Cenoura", "ingredientes": ["Farinha", "Açúcar", "Cenoura", "Ovos", "Manteiga"], "instrucoes": "Misture todos os ingredientes e asse por 40 minutos a 180°C.", "tempoPreparo": "1 hora", "tipoPrato": "Sobremesa"}'
   ```
 - **Atualizar uma receita**:
+
   ```bash
   curl -X PUT http://localhost:3000/recipes/1 \
   -H "Content-Type: application/json" \
   -d '{"titulo": "Bolo de Cenoura Atualizado", "ingredientes": ["Farinha", "Açúcar", "Cenoura", "Ovos", "Manteiga", "Cobertura de Chocolate"], "instrucoes": "Misture todos os ingredientes e asse por 40 minutos a 180°C. Adicione a cobertura.", "tempoPreparo": "1 hora e 15 minutos", "tipoPrato": "Sobremesa"}'
   ```
-- **Remover uma receita**: 
+- **Remover uma receita**:
+
   ```bash
   curl -X DELETE http://localhost:3000/recipes/1
   ```
 - **Pesquisar receitas por ingrediente**:
+
   ```bash
   curl http://localhost:3000/recipes/search?ingrediente=Ovos
   ```
 - **Pesquisar receitas por tipo de prato**:
+
   ```bash
   curl http://localhost:3000/recipes/search?tipoPrato=Sobremesa
   ```
