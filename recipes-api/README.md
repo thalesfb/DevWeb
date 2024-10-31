@@ -75,9 +75,11 @@ O servidor estará rodando em `http://localhost:3000`.
 - **Body (JSON)**:
   ```json
   {
-    "name": "Bolo de Chocolate",
-    "ingredients": ["farinha", "açúcar", "chocolate em pó"],
-    "type": "sobremesa"
+  "titulo": "Bolo de Cenoura",
+  "ingredientes": ["Farinha", "Açúcar", "Cenoura", "Ovos", "Manteiga"],
+  "instrucoes": "Misture todos os ingredientes e asse por 40 minutos a 180°C.",
+  "tempoPreparo": "1 hora",
+  "tipoPrato": "Sobremesa"
   }
   ```
 - **Descrição**: Adiciona uma nova receita.
@@ -90,9 +92,11 @@ O servidor estará rodando em `http://localhost:3000`.
 - **Body (JSON)**:
   ```json
   {
-    "name": "Bolo de Cenoura",
-    "ingredients": ["farinha", "açúcar", "cenoura"],
-    "type": "sobremesa"
+  "titulo": "Bolo de Cenoura",
+  "ingredientes": ["Farinha", "Açúcar", "Cenoura", "Ovos", "Manteiga"],
+  "instrucoes": "Misture todos os ingredientes e asse por 40 minutos a 180°C.",
+  "tempoPreparo": "1 hora",
+  "tipoPrato": "Sobremesa"
   }
   ```
 - **Descrição**: Atualiza uma receita existente.
@@ -115,17 +119,38 @@ O servidor estará rodando em `http://localhost:3000`.
 
 ## Exemplos de Uso
 
-- **Listar todas as receitas**: `GET http://localhost:3000/recipes`
-- **Obter uma receita específica**: `GET http://localhost:3000/recipes/1`
+- **Listar todas as receitas**: 
+  ```bash
+  curl http://localhost:3000/recipes
+  ```
+- **Obter uma receita específica**: 
+  ```bash
+  curl http://localhost:3000/recipes/1
+  ```
 - **Adicionar uma receita**:
   ```bash
-  curl -X POST http://localhost:3000/recipes -H "Content-Type: application/json" -d '{"name": "Sopa de Legumes", "ingredients": ["batata", "cenoura", "abobrinha"], "type": "prato principal"}'
+  curl -X POST http://localhost:3000/recipes \
+  -H "Content-Type: application/json" \
+  -d '{"titulo": "Bolo de Cenoura", "ingredientes": ["Farinha", "Açúcar", "Cenoura", "Ovos", "Manteiga"], "instrucoes": "Misture todos os ingredientes e asse por 40 minutos a 180°C.", "tempoPreparo": "1 hora", "tipoPrato": "Sobremesa"}'
   ```
 - **Atualizar uma receita**:
   ```bash
-  curl -X PUT http://localhost:3000/recipes/1 -H "Content-Type: application/json" -d '{"name": "Bolo de Cenoura", "ingredients": ["farinha", "açúcar", "cenoura"], "type": "sobremesa"}'
+  curl -X PUT http://localhost:3000/recipes/1 \
+  -H "Content-Type: application/json" \
+  -d '{"titulo": "Bolo de Cenoura Atualizado", "ingredientes": ["Farinha", "Açúcar", "Cenoura", "Ovos", "Manteiga", "Cobertura de Chocolate"], "instrucoes": "Misture todos os ingredientes e asse por 40 minutos a 180°C. Adicione a cobertura.", "tempoPreparo": "1 hora e 15 minutos", "tipoPrato": "Sobremesa"}'
   ```
-- **Remover uma receita**: `DELETE http://localhost:3000/recipes/1`
+- **Remover uma receita**: 
+  ```bash
+  curl -X DELETE http://localhost:3000/recipes/1
+  ```
+- **Pesquisar receitas por ingrediente**:
+  ```bash
+  curl http://localhost:3000/recipes/search?ingrediente=Ovos
+  ```
+- **Pesquisar receitas por tipo de prato**:
+  ```bash
+  curl http://localhost:3000/recipes/search?tipoPrato=Sobremesa
+  ```
 
 ## Tecnologias Utilizadas
 
