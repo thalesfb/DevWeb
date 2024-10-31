@@ -10,3 +10,6 @@ Repository for learning web development
 
 ### Seminar
 - [Seminar](https://github.com/thalesfb/DevWeb/tree/main/seminar)
+
+### Avaliation 1
+- [Avaliation 1](https://github.com/thalesfb/DevWeb/tree/main/recipes-api)
