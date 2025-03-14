@@ -1,393 +1,98 @@
-### **🛠 Atividade Prática: Criando um To-Do List Monolítico**
-📌 **Objetivo:** Criar um sistema simples de cadastro de tarefas com funcionalidades de **adicionar, editar, excluir e marcar como concluído**.
+# 🛠 **Atividade Prática: Criando um Sistema de To-Do List Monolítico**
 
-#### **👨‍💻 Tecnologias recomendadas**
-- **Stack básica:** HTML, CSS, JavaScript (para frontend) + Python (Flask) ou Node.js (Express) para o backend.  
-- **Banco de dados:** SQLite (simples e não precisa de configuração extra).  
+## 📌 **Objetivo:**
+
+Criar um sistema de lista de tarefas completo usando arquitetura moderna, com funcionalidades de **adicionar, editar, excluir, marcar como concluído** e recursos avançados como **cache, estatísticas e escalabilidade**.
+
+## 🚀 **Metodologia:**
+
+Este tutorial segue uma metodologia de aprendizado progressivo, começando com conceitos básicos e avançando para implementações de nível profissional:
+
+<!-- referencia para as fases -->
+1. **Fase 1:** [Sistema monolítico básico](#fase-1-sistema-monolítico-básico)
+2. **Fase 2:** [Banco de dados PostgreSQL](#fase-2-banco-de-dados-postgresql)
+3. **Fase 3:** [Cache e estatísticas com Redis](#fase-3-cache-e-estatísticas-com-redis)
+4. **Fase 4:** [Escalabilidade e balanceamento com Nginx](#fase-4-escalabilidade-e-balanceamento-com-nginx)
+5. **Fase 5:** [Conteinerização com Docker](#fase-5-conteinerização-com-docker)
+6. **Fase 6:** [Exercícios práticos](#fase-6-exercícios-práticos)
+
+## 👨‍💻 **Tecnologias Utilizadas:**
+
+- **Backend:** Python com Flask
+- **Frontend:** HTML, CSS
+- **Banco de Dados:** PostgreSQL
+- **Cache:** Redis
+- **Servidor Web:** Gunicorn, Nginx
+- **Contêinerização:** Docker, Docker Compose
 
 ---
 
+# **FASE 1: SISTEMA MONOLÍTICO BÁSICO**
+
 ## **📌 Passo 1: Configurar o Ambiente**
-Antes de começar, os alunos devem garantir que têm o **Python** instalado. Eles podem verificar isso com:  
+
+Antes de começar, verifique se você tem o **Python** instalado:
+
 ```sh
 python --version
 ```
-Se Python estiver instalado, deve retornar algo como:  
-```
-Python 3.x.x
-```
-Caso contrário, o Python pode ser baixado em: [https://www.python.org/downloads/](https://www.python.org/downloads/).
 
----
+Se não estiver instalado, baixe em: [https://www.python.org/downloads/](https://www.python.org/downloads/).
 
-## **📌 Passo 2: Criar um Ambiente Virtual**
-É uma boa prática criar um **ambiente virtual** para o projeto. Isso evita conflitos entre bibliotecas.  
-Execute os comandos:  
+Crie um **ambiente virtual** para o projeto:
+
 ```sh
 # Criar um ambiente virtual
-python -m venv .venv  
+python -m venv .venv
 
 # Ativar o ambiente virtual (Windows)
-.venv\Scripts\activate  
+.venv\Scripts\activate
 
 # Ativar o ambiente virtual (Linux/Mac)
-source .venv/bin/activate  
+source .venv/bin/activate
 ```
-O terminal mostrará algo como `(.venv)` indicando que o ambiente virtual está ativo.
 
----
+## **📌 Passo 2: Instalar as Dependências**
 
-## **📌 Passo 3: Instalar as Dependências**
-Dentro do ambiente virtual, instale o Flask:  
+Dentro do ambiente virtual, instale as dependências necessárias:
+
 ```sh
-pip install flask
+pip install flask gunicorn psycopg2-binary redis
 ```
-Opcionalmente, se quiser salvar as dependências em um arquivo `requirements.txt`, use:  
+
+Salve as dependências em um arquivo `requirements.txt`:
+
 ```sh
 pip freeze > requirements.txt
 ```
-E para instalar a partir dele em outro ambiente:  
-```sh
-pip install -r requirements.txt
+
+## **📌 Passo 3: Criar a Estrutura do Projeto**
+
+Organize seu projeto seguindo uma estrutura modular:
+
+```
+/todolist
+  /templates
+    index.html
+  app.py
+  requirements.txt
+  docker-compose.yml
+  Dockerfile
+  /data
+    init_postgres.sql
 ```
 
----
+## **📌 Passo 4: Criar a Aplicação Flask Básica**
 
-## **📌 Passo 4: Criar o Banco de Dados**
-Crie um script para definir a estrutura do banco.  
-Crie o arquivo `init_db.py` e adicione:  
-```python
-import sqlite3
-
-con = sqlite3.connect("database.db")
-cur = con.cursor()
-cur.execute("""
-CREATE TABLE tasks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    task TEXT NOT NULL,
-    completed INTEGER DEFAULT 0
-)
-""")
-con.commit()
-con.close()
-
-print("Banco de dados criado com sucesso!")
-```
-Agora execute:  
-```sh
-python init_db.py
-```
-Isso criará um arquivo `database.db` com a tabela `tasks`.
-
----
-
-## **📌 Passo 5: Criar a Aplicação Flask**
-Agora, crie o arquivo `app.py` com o seguinte código:
+Crie o arquivo `app.py` com o seguinte código:
 
 ```python
-from flask import Flask, render_template, request, redirect
-import socket, os
-
-app = Flask(__name__)
-
-import sqlite3
-
-def connect_db():
-    return sqlite3.connect("database.db")
-
-@app.route('/oi')
-def hello():
-    hostname = socket.gethostname()
-    port = os.environ.get('PORT', '5000')  # Pega a porta do ambiente ou usa 5000 como padrão
-    return f"Hello from {hostname} on port {port}!\n"
-
-@app.route('/')
-def index():
-    con = connect_db()
-    cur = con.cursor()
-    cur.execute("SELECT * FROM tasks")
-    tasks = cur.fetchall()
-    con.close()
-    return render_template("index.html", tasks=tasks)
-
-@app.route('/add', methods=['POST'])
-def add_task():
-    task = request.form['task']
-    con = connect_db()
-    cur = con.cursor()
-    cur.execute("INSERT INTO tasks (task, completed) VALUES (?, ?)", (task, 0))
-    con.commit()
-    con.close()
-    return redirect('/')
-
-@app.route('/delete/<int:id>')
-def delete_task(id):
-    con = connect_db()
-    cur = con.cursor()
-    cur.execute("DELETE FROM tasks WHERE id=?", (id,))
-    con.commit()
-    con.close()
-    return redirect('/')
-
-@app.route('/complete/<int:id>')
-def complete_task(id):
-    con = connect_db()
-    cur = con.cursor()
-    cur.execute("UPDATE tasks SET completed = 1 WHERE id=?", (id,))
-    con.commit()
-    con.close()
-    return redirect('/')
-
-if __name__ == "__main__":
-    app.run(debug=True)
-```
-Esse código cria uma API simples com as seguintes rotas:
-- `/` → Exibe a lista de tarefas.
-- `/add` → Adiciona uma nova tarefa.
-- `/delete/<id>` → Exclui uma tarefa.
-- `/complete/<id>` → Marca uma tarefa como concluída.
-
----
-
-## **📌 Passo 6: Criar o Frontend**
-Crie uma pasta chamada `templates` e dentro dela um arquivo `index.html`:
-
-```html
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Tarefas</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 500px; margin: auto; text-align: center; }
-        ul { list-style: none; padding: 0; }
-        li { padding: 10px; border: 1px solid #ddd; margin: 5px 0; display: flex; justify-content: space-between; }
-        .completed { text-decoration: line-through; color: gray; }
-    </style>
-</head>
-<body>
-    <h1>Lista de Tarefas</h1>
-    <form action="/add" method="POST">
-        <input type="text" name="task" required>
-        <button type="submit">Adicionar</button>
-    </form>
-    <ul>
-        {% for task in tasks %}
-            <li class="{% if task[2] == 1 %}completed{% endif %}">
-                {{ task[1] }}  
-                <a href="/complete/{{ task[0] }}">✔️</a>
-                <a href="/delete/{{ task[0] }}">❌</a>
-            </li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
-```
-Esse frontend:\
-✅ Exibe as tarefas  
-✅ Permite adicionar novas  
-✅ Permite marcar como concluídas  
-✅ Permite excluir  
-
----
-
-## **📌 Passo 7: Executar a Aplicação**
-Para rodar o servidor Flask, execute:  
-```sh
-python app.py
-```
-Agora acesse no navegador:  
-👉 `http://127.0.0.1:5000/`  
-
----
-
-Para escalar sua aplicação Flask monolítica, você pode adotar estratégias que melhorem o desempenho e permitam que mais usuários acessem simultaneamente. Vou dividir as soluções em **escalabilidade vertical** e **escalabilidade horizontal**, além de outras otimizações.  
-
----
-
-# **1️⃣ Escalabilidade Vertical (Aumentar Recursos do Servidor)**
-A escalabilidade **vertical** significa **melhorar o servidor** onde sua aplicação está rodando. Isso inclui:  
-✅ **Usar um servidor mais potente** (mais CPU, RAM)  
-✅ **Usar um banco de dados externo** (ex: PostgreSQL no RDS da AWS)  
-✅ **Configurar um WSGI mais eficiente**, como **Gunicorn**  
-
-### **🔧 Usando Gunicorn**
-
-WSGI (Web Server Gateway Interface) é um padrão para servidores web e aplicações Python se comunicarem. **Gunicorn** é um servidor WSGI que pode melhorar a performance do Flask. Usar o Gunicorn traz os seguintes benefícios:
-
-✅ Diferente do servidor de desenvolvimento do Flask, que processa apenas uma requisição por vez, o Gunicorn pode lidar com várias conexões simultâneas, tornando a aplicação mais eficiente.\
-✅ O Gunicorn pode ser executado atrás de um proxy reverso como o Nginx ou Apache, que pode servir arquivos estáticos e lidar com tarefas de balanceamento de carga.
-
-Em produção, ao invés de rodar `python app.py`, use **Gunicorn** para melhorar a performance:  
-```sh
-pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 app:app
-```
-Isso inicia 4 "workers", permitindo que várias requisições sejam processadas ao mesmo tempo.
-
-✅ Se houver mais de 4 requisições simultâneas, elas entram na fila e esperam um worker ficar disponível.\
-✅ Se o servidor tiver mais CPU/RAM, você pode aumentar o número de workers.\
-✅ Se o número de requisições for muito alto e os workers demorarem para processar, a fila pode ficar sobrecarregada, causando lentidão ou erros 502/504 (Bad Gateway, Timeout).\
-✅ O Nginx pode ajudar a gerenciar conexões e servir arquivos estáticos, reduzindo a carga do Gunicorn.
-
-Se a aplicação faz muitas operações de entrada e saída (consultas SQL, chamadas HTTP externas), aumentar os workers melhora o desempenho. Fórmula Geral: **2 × CPUs + 1** (ex: 4 CPUs → 9 workers).
-
----
-
-# **2️⃣ Escalabilidade Horizontal (Múltiplas Instâncias)**
-A escalabilidade **horizontal** significa rodar várias cópias da aplicação para distribuir o tráfego.
-
-### **🔧 Usando Load Balancer**
-Se o tráfego aumentar, você pode rodar **múltiplas instâncias** e usar um **Load Balancer** para distribuir as requisições.  
-
-🔹 No **Railway, Render ou Heroku**, basta aumentar as "instâncias" na configuração do serviço.  
-🔹 Se estiver em um **VPS (AWS, DigitalOcean, Brdrive)**, pode usar o **NGINX** como proxy reverso.
-
-Exemplo de configuração NGINX para distribuir o tráfego entre 2 instâncias Flask:
-
-```nginx
-upstream flask_app {
-    server 127.0.0.1:5000;
-    server 127.0.0.1:5001;
-}
-
-server {
-    listen 80;
-    location / {
-        proxy_pass http://flask_app;
-    }
-}
-```
-Isso envia requisições para múltiplas instâncias Flask rodando nas portas **5000** e **5001**.
-
----
-
-# **3️⃣ Usando Containers (Docker e Kubernetes)**
-Outra maneira de escalar é usar **Docker** e **Kubernetes** para gerenciar múltiplas réplicas.
-
-### **🔧 Criando um Dockerfile**
-Crie um arquivo `Dockerfile` na raiz do projeto:  
-```dockerfile
-# Usa a versão leve do Python (Alpine)
-FROM python:3.9-alpine
-# Define o diretório de trabalho dentro do contêiner
-WORKDIR /app
-# Copia os arquivos necessários para o contêiner
-COPY . .
-# Instala as dependências necessárias (usa --no-cache para evitar arquivos desnecessários)
-RUN pip install --no-cache-dir -r requirements.txt
-# Expõe a porta 5000 para acesso externo
-EXPOSE 5000
-# Comando para iniciar a aplicação usando Gunicorn
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
-```
-Agora, **crie e rode o container**:  
-```sh
-docker build -t flask-app .
-docker run -p 5000:5000 flask-app
-```
-Se quiser escalar com **Kubernetes**, pode usar `kubectl scale` para rodar **múltiplas cópias** do container.
-
----
-
-# **4️⃣ Banco de Dados Externo**
-Usar **SQLite** em produção não é recomendado. Para escalar, use um banco como:  
-✅ **PostgreSQL** (ex: AWS RDS, Supabase, Railway, Render)  
-✅ **MySQL** (ex: PlanetScale)  
-
-### **🔧 Exemplo de Conexão PostgreSQL**
-1️⃣ Instale o driver:  
-```sh
-pip install psycopg2
-```
-2️⃣ Atualize `connect_db()` no `app.py`:  
-```python
-import psycopg2
-def connect_db():
-    return psycopg2.connect(
-        dbname="meubanco",
-        user="usuario",
-        password="senha",
-        host="servidor.externo.com",
-        port=5432
-    )
-```
-Isso melhora a escalabilidade, pois várias instâncias Flask podem acessar o mesmo banco.
-
----
-
-# **5️⃣ Cache para Melhorar Performance**
-Usar um **cache** evita que consultas repetidas sobrecarreguem o banco.
-
-✅ **Redis**: Ótimo para armazenar resultados de consultas frequentes.  
-✅ **Memcached**: Boa opção para melhorar tempos de resposta.  
-
-### **🔧 Usando Redis**
-Instale a biblioteca Python:
-```sh
-pip install redis
-```
-No `app.py`, adicione um cache:
-```python
-import redis
-cache = redis.Redis(host='localhost', port=6379, db=0)
-
-@app.route('/')
-def index():
-    tasks = cache.get('tasks')
-    if not tasks:
-        con = connect_db()
-        cur = con.cursor()
-        cur.execute("SELECT * FROM tasks")
-        tasks = cur.fetchall()
-        con.close()
-        cache.set('tasks', str(tasks), ex=30)  # Expira em 30s
-    return render_template("index.html", tasks=eval(tasks))
-```
-Isso reduz a carga no banco de dados.
-
----
-
-# **6️⃣ Otimizações de Código**
-
-Vamos fazer mudanças para testar a escalabilidade da aplicação.
-
-### Database Init
-
-Vamos fazer uma alteração no script `init_db.py` para criar o banco de dados em um diretório separado. Criamos um diretório `data` e alteramos o script para criar o banco de dados em `data/database.db`.
-
-```sh
-mkdir data
-```
-
-```python
-import sqlite3
-
-con = sqlite3.connect("data/database.db")
-cur = con.cursor()
-cur.execute("""
-CREATE TABLE tasks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    task TEXT NOT NULL,
-    completed INTEGER DEFAULT 0
-)
-""")
-con.commit()
-con.close()
-
-print("Banco de dados criado com sucesso!")
-```
-
-Em seguida, vamos alterar o `app.py` para conectar ao banco de dados no diretório `data`. Além disso, vamos adicionar um log para cada requisição recebida. Isso nos ajudará a identificar o servidor que está processando a requisição.
-
-### app.py
-```python
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 import socket
 import os
 import logging
-import sqlite3
+import psycopg2
+from psycopg2.extras import DictCursor
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -396,223 +101,384 @@ logger = logging.getLogger(__name__)
 @app.before_request
 def log_request_info():
     hostname = socket.gethostname()
-    port = os.environ.get('PORT', '5000')  # Pega a porta do ambiente ou usa 5000 como padrão
+    port = os.environ.get('PORT', '5000')
     logger.info(f"Requisição recebida em {hostname} na porta {port}")
 
 def connect_db():
-    # return sqlite3.connect("database.db")
-    db_path = '/app/db/database.db'
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
+    database_url = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@db:5432/todolist')
+    conn = psycopg2.connect(database_url)
+    conn.autocommit = True
     return conn
-
-@app.route('/env')
-def env():
-    return str(os.environ)
 
 @app.route('/oi')
 def hello():
     hostname = socket.gethostname()
-    port = os.environ.get('PORT', '5000')  # Pega a porta do ambiente ou usa 5000 como padrão
-    logger.info(f"Requisição recebida em {hostname} na porta {port}")
+    port = os.environ.get('PORT', '5000')
     return f"Hello from {hostname} on port {port}!\n"
 
 @app.route('/')
 def index():
-    con = connect_db()
-    cur = con.cursor()
+    conn = connect_db()
+    cur = conn.cursor(cursor_factory=DictCursor)
     cur.execute("SELECT * FROM tasks")
     tasks = cur.fetchall()
-    con.close()
+    conn.close()
     return render_template("index.html", tasks=tasks)
 
 @app.route('/add', methods=['POST'])
 def add_task():
     task = request.form['task']
-    con = connect_db()
-    cur = con.cursor()
-    cur.execute("INSERT INTO tasks (task, completed) VALUES (?, ?)", (task, 0))
-    con.commit()
-    con.close()
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO tasks (task, completed) VALUES (%s, %s)", (task, 0))
+    conn.close()
     return redirect('/')
 
 @app.route('/delete/<int:id>')
 def delete_task(id):
-    con = connect_db()
-    cur = con.cursor()
-    cur.execute("DELETE FROM tasks WHERE id=?", (id,))
-    con.commit()
-    con.close()
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM tasks WHERE id=%s", (id,))
+    conn.close()
     return redirect('/')
 
 @app.route('/complete/<int:id>')
 def complete_task(id):
-    con = connect_db()
-    cur = con.cursor()
-    cur.execute("UPDATE tasks SET completed = 1 WHERE id=?", (id,))
-    con.commit()
-    con.close()
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute("UPDATE tasks SET completed = 1 WHERE id=%s", (id,))
+    conn.close()
     return redirect('/')
 
 if __name__ == "__main__":
     app.run(debug=True)
 ```
 
-## Começando com Docker
+## **📌 Passo 5: Criar o Frontend**
 
-Vamos testar temporariamente uma imagem Docker para verificar se tudo está funcionando corretamente. Para isso, vamos usar a imagem `crccheck/hello-world` que é um servidor HTTP simples. Podemos perceber que o parâmetro `--rm` remove o container após a execução.
+Crie a pasta `templates` e dentro dela um arquivo `index.html`:
 
-```sh
-# https://hub.docker.com/r/crccheck/hello-world/
-docker run --rm --name web-test -p 1234:8000 crccheck/hello-world
+```html
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Tarefas</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 500px;
+        margin: auto;
+        text-align: center;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      li {
+        padding: 10px;
+        border: 1px solid #ddd;
+        margin: 5px 0;
+        display: flex;
+        justify-content: space-between;
+      }
+      .completed {
+        text-decoration: line-through;
+        color: gray;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Lista de Tarefas</h1>
+    <form action="/add" method="POST">
+      <input type="text" name="task" required />
+      <button type="submit">Adicionar</button>
+    </form>
+    <ul>
+      {% for task in tasks %}
+      <li class="{% if task['completed'] == 1 %}completed{% endif %}">
+        {{ task['task'] }}
+        <div>
+          <a href="/complete/{{ task['id'] }}">✔️</a>
+          <a href="/delete/{{ task['id'] }}">❌</a>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
 ```
 
-### Nginx
+---
 
-Vamos adicionar um servidor de backup ao nosso cluster. Para isso, vamos usar o **Busybox** como um servidor HTTP simples. O **Busybox** é uma imagem leve que contém várias ferramentas comuns do Linux. Vamos usar o **httpd** do Busybox para servir arquivos estáticos.
+# **FASE 2: BANCO DE DADOS POSTGRESQL**
 
-```bash
-# Define o usuário sob o qual o Nginx será executado. 'nginx' é um usuário padrão criado para rodar o serviço
-# de forma segura, evitando privilégios de root e reduzindo riscos de segurança.
-user nginx;
+## **📌 Passo 6: Criar o Script de Inicialização do PostgreSQL**
 
-# Define o número de processos trabalhadores (workers). 'auto' ajusta automaticamente com base no número de
-# núcleos da CPU, otimizando o uso de recursos para lidar com múltiplas conexões.
-worker_processes auto;
+Crie uma pasta `data` e dentro dela o arquivo `init_postgres.sql`:
 
-# Especifica o caminho do arquivo de log de erros e o nível de severidade. 'warn' registra mensagens de aviso
-# ou mais graves, ajudando a identificar problemas sem sobrecarregar o log com detalhes triviais.
-error_log /var/log/nginx/error.log warn;
+```sql
+-- Cria a tabela tasks se ela não existir
+CREATE TABLE IF NOT EXISTS tasks (
+    id SERIAL PRIMARY KEY,
+    task TEXT NOT NULL,
+    completed INTEGER DEFAULT 0
+);
 
-# Define o arquivo onde o PID (ID do processo) do Nginx é armazenado. Isso é usado pelo sistema para gerenciar
-# o processo (ex.: parar ou reiniciar o servidor).
-pid /var/run/nginx.pid;
+-- Cria índice para melhorar performance de consultas
+CREATE INDEX IF NOT EXISTS idx_tasks_completed ON tasks(completed);
 
-# Bloco 'events' configura como o Nginx gerencia eventos de rede, como conexões de clientes.
-events {
-    # Define o número máximo de conexões simultâneas por processo trabalhador. 1024 é um valor padrão razoável,
-    # mas pode ser aumentado em servidores com mais carga ou recursos.
-    worker_connections 1024;
-}
+-- Função para verificar se a tabela está vazia
+CREATE OR REPLACE FUNCTION is_table_empty(table_name text)
+RETURNS boolean AS $$
+DECLARE
+    row_count integer;
+BEGIN
+    EXECUTE format('SELECT COUNT(*) FROM %I', table_name) INTO row_count;
+    RETURN row_count = 0;
+END;
+$$ LANGUAGE plpgsql;
 
-# Bloco 'http' contém configurações globais para o protocolo HTTP/HTTPS.
-http {
-    # Inclui um arquivo externo que associa extensões de arquivos (ex.: .html, .jpg) a tipos MIME, permitindo
-    # que o Nginx informe corretamente aos navegadores como interpretar os arquivos enviados.
-    include /etc/nginx/mime.types;
+-- Insere tarefas de exemplo apenas se a tabela estiver vazia
+DO $$
+BEGIN
+    IF (SELECT is_table_empty('tasks')) THEN
+        INSERT INTO tasks (task, completed) VALUES
+            ('Estudar Docker', 0),
+            ('Aprender sobre PostgreSQL', 0),
+            ('Configurar Nginx', 1),
+            ('Implementar Redis Cache', 0),
+            ('Otimizar configuração Gunicorn', 0);
+    END IF;
+END $$;
 
-    # Define o tipo MIME padrão para arquivos sem extensão mapeada. 'application/octet-stream' é um tipo genérico
-    # que indica um fluxo de bytes brutos, deixando a interpretação para o cliente.
-    default_type application/octet-stream;
+-- Log de inicialização
+DO $$
+BEGIN
+    RAISE NOTICE 'Banco de dados inicializado com sucesso!';
+END $$;
+```
 
-    # Ativa o uso de 'sendfile', uma chamada de sistema eficiente que transfere arquivos diretamente do disco para
-    # a rede, reduzindo a sobrecarga ao evitar cópias na memória do usuário.
-    sendfile on;
+## **📌 Passo 7: Criar Arquivos de Configuração Docker**
 
-    # Define o tempo (em segundos) que uma conexão persistente (keep-alive) será mantida aberta. 65 segundos é um
-    # valor equilibrado que melhora a performance ao reutilizar conexões, mas evita desperdício de recursos.
-    keepalive_timeout 65;
+### **Arquivo Dockerfile:**
 
-    # Define um grupo de servidores upstream (backend) chamado 'flask_app'. O Nginx balanceará as requisições entre
-    # esses servidores usando um algoritmo padrão (round-robin, a menos que configurado de outra forma).
-    upstream flask_app {
-        # Servidor primário na porta 5000 (app1). 'max_fails=3' e 'fail_timeout=30s' definem tolerância a falhas:
-        # após 3 falhas em 30 segundos, o servidor é temporariamente removido do balanceamento.
-        server app1:5000 max_fails=3 fail_timeout=30s;
+```dockerfile
+# Usa a versão leve do Python (Slim)
+FROM python:3.10-slim
+# Define o diretório de trabalho dentro do contêiner
+WORKDIR /app
 
-        # Segundo servidor primário na porta 5001 (app2), com as mesmas regras de tolerância a falhas.
-        server app2:5001 max_fails=3 fail_timeout=30s;
+# Instala as dependências necessárias
+RUN apt update && apt install -y net-tools bash libpq-dev gcc curl
 
-        # Servidor de backup na porta 3000 (app3). Só é usado se os servidores primários estiverem indisponíveis,
-        # funcionando como uma camada extra de resiliência.
-        server app3:3000 backup;
-    }
+# Copia apenas o requirements.txt primeiro (para aproveitar o cache do Docker)
+COPY requirements.txt .
 
-    # Primeiro bloco 'server': lida com requisições HTTP na porta 80 e redireciona para HTTPS.
-    server {
-        # Escuta na porta 80, padrão para HTTP, permitindo que o servidor receba requisições não seguras.
-        listen 80;
+# Atualizar pip
+RUN python -m pip install --upgrade pip
 
-        # Define o nome do servidor. 'localhost' é usado para testes locais; em produção, seria um domínio real.
-        server_name localhost;
+# Instala as dependências necessárias (usa --no-cache para evitar arquivos desnecessários)
+RUN pip install --no-cache-dir -r requirements.txt
 
-        # Redireciona todas as requisições para HTTPS com um código 301 (redirecionamento permanente), melhorando
-        # a segurança ao forçar o uso de conexões criptografadas.
-        return 301 https://$host$request_uri;
-    }
+# Copia apenas os arquivos necessários para a aplicação
+COPY app.py .
+COPY templates/ templates/
 
-    # Segundo bloco 'server': lida com requisições HTTPS na porta 443 com suporte a HTTP/2.
-    server {
-        # Escuta na porta 443 (padrão para HTTPS) com SSL ativado e HTTP/2 habilitado. HTTP/2 melhora a eficiência
-        # com multiplexação e compressão de cabeçalhos, mas exige SSL/TLS.
-        listen 443 ssl http2;
+# Comando para iniciar a aplicação usando Gunicorn diretamente
+CMD ["sh", "-c", "gunicorn --workers 3 --bind 0.0.0.0:${PORT:-5000} app:app"]
+```
 
-        # Nome do servidor, novamente 'localhost' para testes locais. Em produção, use seu domínio (ex.: example.com).
-        server_name localhost;
+### **Arquivo docker-compose.yml básico:**
 
-        # Caminho para o certificado SSL (inclui o certificado público e a cadeia de certificação). Aqui, usamos um
-        # certificado autoassinado gerado localmente.
-        ssl_certificate /etc/letsencrypt/fullchain.pem;
+```yaml
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    environment:
+      - PORT=5000
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/todolist
+    ports:
+      - '5000:5000'
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
 
-        # Caminho para a chave privada correspondente ao certificado. Deve ser mantida segura e nunca exposta.
-        ssl_certificate_key /etc/letsencrypt/privkey.pem;
+  db:
+    image: postgres:14-alpine
+    container_name: db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=todolist
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./data/init_postgres.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-        # Define os protocolos SSL/TLS suportados. TLSv1.2 e TLSv1.3 são versões modernas e seguras; versões mais
-        # antigas (ex.: SSLv3) são evitadas por vulnerabilidades.
-        ssl_protocols TLSv1.2 TLSv1.3;
+volumes:
+  postgres_data:
+    driver: local
+```
 
-        # Prioriza as cifras definidas pelo servidor em vez das preferências do cliente, aumentando a segurança ao
-        # garantir o uso de opções fortes.
-        ssl_prefer_server_ciphers on;
+---
 
-        # Lista de cifras criptográficas permitidas. 'EECDH+AESGCM:EDH+AESGCM' são opções modernas e seguras,
-        # compatíveis com HTTP/2 e otimizadas para desempenho e proteção.
-        ssl_ciphers EECDH+AESGCM:EDH+AESGCM;
+# **FASE 3: CACHE E ESTATÍSTICAS COM REDIS**
 
-        # Bloco 'location' define como tratar requisições para a raiz ('/') do site.
-        location / {
-            # Encaminha as requisições para o grupo upstream 'flask_app', delegando o processamento aos servidores
-            # backend (app1, app2 ou app3).
-            proxy_pass http://flask_app;
+## **📌 Passo 8: Implementar Redis para Cache e Estatísticas**
 
-            # Define cabeçalhos HTTP enviados ao backend para preservar informações do cliente:
-            # 'Host' mantém o domínio original da requisição, essencial para aplicações que dependem dele.
-            proxy_set_header Host $host;
+Atualize o arquivo `app.py` para incluir funcionalidades de cache e estatísticas:
 
-            # 'X-Real-IP' envia o IP real do cliente ao backend, útil para logs ou autenticação.
-            proxy_set_header X-Real-IP $remote_addr;
+```python
+# Adicione no início do arquivo, após os imports existentes
+import redis
+import json
+import time
 
-            # 'X-Forwarded-For' adiciona o IP do cliente à lista de proxies, permitindo rastreamento em cenários com
-            # múltiplos proxies.
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+# Adicione esta função após os imports
+def get_redis():
+    redis_url = os.environ.get('REDIS_URL', 'redis://redis:6379/0')
+    return redis.from_url(redis_url)
 
-            # 'X-Forwarded-Proto' informa o protocolo original (http ou https), importante para aplicações que precisam
-            # saber se a requisição inicial foi segura.
-            proxy_set_header X-Forwarded-Proto $scheme;
+# Atualize a função before_request
+@app.before_request
+def log_request_info():
+    hostname = socket.gethostname()
+    port = os.environ.get('PORT', '5000')
+    logger.info(f"Requisição recebida em {hostname} na porta {port}")
 
-            # Define o tempo máximo (em segundos) para estabelecer a conexão com o backend. 10 segundos é um valor
-            # baixo, exigindo respostas rápidas ou falhando a requisição.
-            proxy_connect_timeout 10;
+    # Incrementa contador de acessos no Redis
+    try:
+        r = get_redis()
+        r.incr('access_count')
+        r.hincrby('access_by_path', request.path, 1)
+    except Exception as e:
+        logger.error(f"Erro ao registrar acesso no Redis: {str(e)}")
 
-            # Limita o tempo para enviar dados ao backend, evitando travamentos se o backend estiver lento.
-            proxy_send_timeout 10;
+# Atualize a função index com cache
+@app.route('/')
+def index():
+    # Tenta obter dados do cache
+    try:
+        r = get_redis()
+        cached_tasks = r.get('tasks_list')
 
-            # Limita o tempo para receber uma resposta do backend, garantindo que requisições demoradas sejam encerradas.
-            proxy_read_timeout 10;
+        if cached_tasks:
+            logger.info("Servindo tarefas do cache")
+            tasks = json.loads(cached_tasks)
+        else:
+            logger.info("Buscando tarefas do banco de dados")
+            conn = connect_db()
+            cur = conn.cursor(cursor_factory=DictCursor)
+            cur.execute("SELECT * FROM tasks")
+            tasks = [dict(task) for task in cur.fetchall()]
+            conn.close()
 
-            # Define o tamanho máximo do corpo da requisição (ex.: uploads). '10M' (10 megabytes) protege contra abusos,
-            # como envio de arquivos muito grandes.
-            client_max_body_size 10M;
+            # Armazena em cache por 30 segundos
+            r.setex('tasks_list', 30, json.dumps(tasks))
+    except Exception as e:
+        logger.error(f"Erro com Redis: {str(e)}")
+        # Fallback para banco de dados
+        conn = connect_db()
+        cur = conn.cursor(cursor_factory=DictCursor)
+        cur.execute("SELECT * FROM tasks")
+        tasks = [dict(task) for task in cur.fetchall()]
+        conn.close()
+
+    return render_template("index.html", tasks=tasks)
+
+# Adicione esta nova rota para estatísticas
+@app.route('/stats')
+def stats():
+    try:
+        r = get_redis()
+        access_count = int(r.get('access_count') or 0)
+        access_by_path = {k.decode(): int(v) for k, v in r.hgetall('access_by_path').items()}
+
+        # Coleta tempos de resposta
+        response_times = r.lrange('response_times', 0, -1)
+        avg_response_time = 0
+        if response_times:
+            avg_response_time = sum(float(t) for t in response_times) / len(response_times)
+
+        stats_data = {
+            'total_accesses': access_count,
+            'by_path': access_by_path,
+            'avg_response_time_ms': round(avg_response_time * 1000, 2)
         }
-    }
-}
+        return jsonify(stats_data)
+    except Exception as e:
+        logger.error(f"Erro ao obter estatísticas: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+# Implemente middleware para registrar tempo de resposta
+@app.after_request
+def after_request(response):
+    try:
+        request_time = request.environ.get('REQUEST_TIME')
+        if request_time:
+            elapsed = time.time() - request_time
+            r = get_redis()
+            r.lpush('response_times', elapsed)
+            r.ltrim('response_times', 0, 99)  # Mantém apenas os 100 últimos
+    except Exception as e:
+        logger.error(f"Erro ao registrar tempo de resposta: {str(e)}")
+    return response
+
+# Middleware para iniciar o timer de requisição
+@app.before_request
+def start_timer():
+    request.environ['REQUEST_TIME'] = time.time()
 ```
 
-> **Artigo**: [Tune nginx performance](https://medium.com/@tynwthpq/tune-nginx-performance-fbba6a7f4a25)
+## **📌 Passo 9: Atualizar o docker-compose.yml para incluir Redis**
 
-### Docker Compose
+Adicione o serviço Redis ao arquivo `docker-compose.yml`:
 
-Vamos usar o **Docker Compose** para gerenciar os containers. O Docker Compose é uma ferramenta que permite definir e executar aplicativos Docker multi-container. Ele usa um arquivo YAML para configurar os serviços, volumes e redes. No arquivo `docker-compose.yml`, definimos os serviços `app1`, `app2`, `app3` e `nginx`.
+```yaml
+services:
+  # Serviços existentes (app, db)...
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+```
+
+---
+
+# **FASE 4: ESCALABILIDADE E BALANCEAMENTO COM NGINX**
+
+## **📌 Passo 10: Implementar Escalabilidade Horizontal**
+
+Atualize o `docker-compose.yml` para ter múltiplas instâncias da aplicação:
 
 ```yaml
 services:
@@ -623,11 +489,22 @@ services:
     container_name: app1
     environment:
       - PORT=5000
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/todolist
+      - REDIS_URL=redis://redis:6379/0
     volumes:
-      - ./data:/app/db
+      - ./data:/app/data
     depends_on:
-      cert-generator:
-        condition: service_healthy  # Só inicia após o certificado estar pronto
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:5000/oi']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   app2:
     build:
@@ -636,154 +513,242 @@ services:
     container_name: app2
     environment:
       - PORT=5001
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/todolist
+      - REDIS_URL=redis://redis:6379/0
     volumes:
-      - ./data:/app/db
+      - ./data:/app/data
     depends_on:
-      cert-generator:
-        condition: service_healthy  # Só inicia após o certificado estar pronto
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:5001/oi']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
+  # Servidor de backup para alta disponibilidade
   app3:
     image: busybox:latest
     container_name: app3
     volumes:
       - ./backup:/var/www
-    command: ["httpd", "-f", "-p", "3000", "-h", "/var/www"]
-    depends_on:
-      cert-generator:
-        condition: service_healthy  # Só inicia após o certificado estar pronto
+    command: ['httpd', '-f', '-p', '3000', '-h', '/var/www']
 
+  # Configuração de Nginx para balanceamento de carga
   nginx:
     image: nginx:latest
     container_name: nginx
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certs:/etc/letsencrypt
     ports:
-      - "80:80"   # Mapeia para 8080 no Windows/WSL
-      - "443:443"  # Mapeia para 8443 no Windows/WSL
+      - '80:80'
     depends_on:
       app1:
-        condition: service_started
+        condition: service_healthy
       app2:
-        condition: service_started
+        condition: service_healthy
       app3:
         condition: service_started
-      cert-generator:
-        condition: service_healthy  # Só inicia após o certificado estar pronto
-
-  cert-generator:
-    image: alpine:latest
-    container_name: cert-generator
-    volumes:
-      - ./certs:/etc/letsencrypt
-    command: >
-      /bin/sh -c "
-        apk add openssl &&
-        openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/letsencrypt/privkey.pem -out /etc/letsencrypt/fullchain.pem -subj '/CN=localhost' &&
-        chown -R 101:101 /etc/letsencrypt &&
-        tail -f /dev/null  # Mantém o container ativo após gerar os certificados
-      "
-    healthcheck:
-      test: ["CMD", "test", "-f", "/etc/letsencrypt/fullchain.pem"]  # Verifica se o certificado foi gerado
-      interval: 5s
-      timeout: 3s
-      retries: 3
-      start_period: 5s
-
-  # Serviço temporário para gerar certificados com Certbot
-  # certbot:
-  #   image: certbot/certbot:latest  # Imagem oficial do Certbot
-  #   volumes:
-  #     - ./certs:/etc/letsencrypt   # Armazena os certificados no diretório ./certs do host
-  #   entrypoint: /bin/sh           # Substitui o entrypoint padrão para rodar comandos manuais
-  #   command: -c "certbot certonly --standalone -d example.com -d www.example.com --email fabricio.bizotto@gmail.com --agree-tos --no-eff-email"
-  #   # Comando para gerar certificados no modo standalone (substitua example.com e seuemail@example.com)
+    restart: always
 ```
 
-**Detalhes**:
-- **app1** e **app2** são instâncias do Flask rodando na porta 5000 e 5001, respectivamente.
-- **app3** é um servidor de backup usando o Busybox para servir arquivos estáticos na porta 3000.
-- **nginx** é o servidor Nginx que balanceia a carga entre app1, app2 e app3.
-- O volume `./data` é montado em `/app/db` nos containers app1 e app2 para persistir o banco de dados.
-- O volume `./backup` é montado em `/var/www` no container app3 para servir arquivos estáticos.
-- O volume `./nginx/nginx.conf` é montado em `/etc/nginx/nginx.conf` no container nginx para configurar o Nginx.
-- O Nginx depende dos serviços app1, app2 e app3, garantindo que eles sejam iniciados primeiro.
-- O Nginx escuta na porta 80 e encaminha as requisições para os servidores backend.
-- O serviço `cert-generator` gera certificados SSL autoassinados para o Nginx.
-- O serviço `cert-generator` só inicia após gerar os certificados e mantém o container ativo com `tail -f /dev/null`.
-- O serviço `cert-generator` tem um healthcheck que verifica se o certificado foi gerado.
+## **📌 Passo 11: Configurar o Nginx para Balanceamento de Carga**
 
-### Dockerfile
-```dockerfile
-# Usa a versão leve do Python (Slim)
-FROM python:3.9-slim
-# Define o diretório de trabalho dentro do contêiner
-WORKDIR /app
+Crie uma pasta `nginx` e dentro dela um arquivo `nginx.conf`:
 
-# Instala as dependências necessárias
-RUN apt update && apt install -y net-tools bash
+```nginx
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log warn;
+pid /var/run/nginx.pid;
 
-# Copia os arquivos necessários para o contêiner
-COPY . .
-# Instala as dependências necessárias (usa --no-cache para evitar arquivos desnecessários)
-RUN pip install --no-cache-dir -r requirements.txt
-# Comando para iniciar a aplicação usando Gunicorn
-CMD ["sh", "-c", "gunicorn --workers 3 --bind 0.0.0.0:${PORT:-5000} app:app"]
+events {
+    worker_connections 1024;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    sendfile on;
+    keepalive_timeout 65;
+
+    upstream flask_app {
+        server app1:5000 max_fails=3 fail_timeout=30s;
+        server app2:5001 max_fails=3 fail_timeout=30s;
+        server app3:3000 backup;
+    }
+
+    server {
+        listen 80;
+        server_name localhost;
+
+        location / {
+            proxy_pass http://flask_app;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_connect_timeout 10;
+            proxy_send_timeout 10;
+            proxy_read_timeout 10;
+            client_max_body_size 10M;
+        }
+    }
+}
 ```
 
-### Hosts
+## **📌 Passo 12: Configurar Arquivos de Backup**
 
-Estamos usando o domínio `desweb.local` para testar a aplicação. Adicione o seguinte ao arquivo `hosts`:
+Crie uma pasta `backup` e dentro dela um arquivo HTML básico para caso todos os servidores principais falhem:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Serviço em Manutenção</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 50px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      h1 {
+        color: #e74c3c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Serviço em Manutenção</h1>
+      <p>
+        Nossos servidores estão passando por manutenção. Por favor, tente novamente em alguns
+        instantes.
+      </p>
+    </div>
+  </body>
+</html>
+```
+
+---
+
+# **FASE 5: MONITORAMENTO E TESTES DE CARGA**
+
+## **📌 Passo 13: Adicionar Monitoramento Básico**
+
+Crie uma rota `/health` para verificar a saúde do sistema:
+
+```python
+@app.route('/health')
+def health():
+    health_data = {
+        'status': 'ok',
+        'timestamp': time.time(),
+        'hostname': socket.gethostname(),
+        'services': {}
+    }
+
+    # Verifica conexão com o PostgreSQL
+    try:
+        conn = connect_db()
+        cur = conn.cursor()
+        cur.execute("SELECT 1")
+        cur.fetchone()
+        conn.close()
+        health_data['services']['database'] = 'ok'
+    except Exception as e:
+        health_data['services']['database'] = f'error: {str(e)}'
+        health_data['status'] = 'degraded'
+
+    # Verifica conexão com o Redis
+    try:
+        r = get_redis()
+        r.ping()
+        health_data['services']['redis'] = 'ok'
+    except Exception as e:
+        health_data['services']['redis'] = f'error: {str(e)}'
+        health_data['status'] = 'degraded'
+
+    # Define o código de status com base na saúde geral
+    status_code = 200 if health_data['status'] == 'ok' else 503
+
+    return jsonify(health_data), status_code
+```
+
+## **📌 Passo 14: Executar e Testar a Aplicação**
+
+Construa e inicie os containers com Docker Compose:
 
 ```sh
-127.0.0.1 desweb.local
-```
-
-> Se estiver usando WSL, o arquivo `hosts` está em `C:\Windows\System32\drivers\etc\hosts`. Você precisará editar como administrador. No Linux, o arquivo está em `/etc/hosts`.
-
-### Comandos
-```sh
-docker ps
-docker stats
-docker compose ps
 docker compose up -d --build
-docker compose down
-docker compose logs -f app1
-docker compose logs -f app2
-docker compose logs -f nginx --tail 100
-docker-compose up -d --force-recreate nginx # Força a recriação do container
-docker exec -it nginx /bin/bash # Acessa o container Nginx
-docker exec nginx ls -l /etc/letsencrypt # Lista os certificados
-docker exec -it app1 bash -c "netstat -tuln | grep 5000"
-docker exec -it app2 bash -c "netstat -tuln | grep 5001"
-curl -k http://localhost/oi  # -k: erro 301
-curl -k https://localhost/oi  # -k: Ignora erros de certificado
-for i in {1..10}; do curl -k https://localhost/oi; done
-
-# Network
-docker network ls
-docker network inspect monolito_default
-docker inspect nginx | grep IPAddress
-docker inspect app1 | grep IPAddress
-docker inspect app2 | grep IPAddress
-docker inspect app3 | grep IPAddress
-docker inspect cert-generator | grep IPAddress
-docker port nginx
-docker compose exec nginx curl http://app1:5000
-docker compose exec nginx curl http://app2:5001/oi
 ```
 
-### Para parar um container 
+Acesse a aplicação:
+
+- Acesse a aplicação em `http://localhost`
+- Veja as estatísticas em `http://localhost/stats`
+- Verifique a saúde do sistema em `http://localhost/health`
+
+Teste o balanceamento de carga:
 
 ```sh
+for i in {1..10}; do curl http://localhost/oi; done
+```
+
+Teste a alta disponibilidade:
+
+```sh
+# Pare os servidores principais
 docker compose stop app1
 docker compose stop app2
-# assim testamos o backup
+
+# Verifique se o servidor de backup está respondendo
+curl http://localhost
 ```
 
-### Limpeza
+---
 
-```sh
-docker compose down
-docker system prune -a # Remove todos os containers, imagens e volumes não utilizados, ou seja, limpa tudo
-```
+# **FASE 6: EXERCÍCIOS PRÁTICOS**
+
+1. **Implementar Autenticação**
+
+   - Adicione um sistema de login para proteger a lista de tarefas
+   - Use Flask-Login e estruture o código de forma modular
+
+2. **Adicionar Categorias para Tarefas**
+
+   - Modifique o banco de dados para incluir categorias
+   - Atualize a interface para filtrar por categoria
+
+3. **Implementar API REST Completa**
+
+   - Crie endpoints RESTful seguindo as melhores práticas
+   - Documente a API usando Swagger/OpenAPI
+
+4. **Integrar com Ferramenta de Monitoramento**
+   - Configure Prometheus para coletar métricas
+   - Crie um dashboard Grafana para visualizar métricas
+
+---
+
+# **CONCLUSÃO**
+
+Este tutorial demonstrou como construir uma aplicação moderna e escalável usando as melhores práticas de desenvolvimento. Ao seguir esta abordagem, você criou um sistema que:
+
+1. **É altamente escalável** - tanto vertical quanto horizontalmente
+2. **Tem alta disponibilidade** - com balanceamento de carga e servidor de backup
+3. **É performático** - com cache, índices e configurações otimizadas
+4. **É monitorável** - com métricas, logs e endpoints de saúde
+5. **Segue boas práticas DevOps** - usando containerização e configuração declarativa
+
+Para aprendizado adicional, explore conceitos de CI/CD, Infrastructure as Code, e arquiteturas de microsserviços.
