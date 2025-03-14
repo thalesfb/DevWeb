@@ -13,8 +13,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Conexão com o Redis
-
-
 def get_redis():
     redis_url = os.environ.get('REDIS_URL', 'redis://redis:6379/0')
     return redis.from_url(redis_url)
