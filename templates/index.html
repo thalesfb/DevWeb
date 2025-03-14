@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tarefas</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --light-text: #6c757d;
+            --danger-color: #e63946;
+            --success-color: #06d6a0;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            text-align: center;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        h1 { 
+            color: var(--primary-color); 
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+        }
+        
+        .app-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            text-align: left;
+            color: var(--light-text);
+            font-weight: 500;
+        }
+        
+        .input-group {
+            display: flex;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        ul { 
+            list-style: none; 
+            padding: 0;
+            margin-top: 20px;
+        }
+        
+        li { 
+            padding: 15px; 
+            border-radius: var(--border-radius); 
+            margin: 10px 0; 
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .completed { 
+            text-decoration: line-through; 
+            color: var(--light-text); 
+            border-left-color: var(--success-color);
+            background-color: rgba(6, 214, 160, 0.05);
+        }
+        
+        .task-text {
+            flex: 1;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .task-actions a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+        
+        .task-actions a:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        .empty-message {
+            color: var(--light-text);
+            margin: 30px 0;
+            font-style: italic;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        li {
+            animation: fadeIn 0.4s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>Lista de Tarefas</h1>
+        
+        <form action="/add" method="POST" class="form-group">
+            <label for="task-input">O que você precisa fazer?</label>
+            <div class="input-group">
+                <input type="text" name="task" id="task-input" required placeholder="Digite sua tarefa aqui...">
+                <button type="submit">Adicionar</button>
+            </div>
+        </form>
+        
+        {% if tasks %}
+            <ul>
+                {% for task in tasks %}
+                    <li class="{% if task[2] == 1 %}completed{% endif %}">
+                        <span class="task-text">{{ task[1] }}</span>
+                        <div class="task-actions">
+                            {% if task[2] != 1 %}
+                                <a href="/complete/{{ task[0] }}" title="Marcar como concluída">✅</a>
+                            {% endif %}
+                            <a href="/delete/{{ task[0] }}" title="Excluir tarefa">❌</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty-message">
+                <p>Sua lista de tarefas está vazia. Adicione uma nova tarefa!</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="footer">
+        <p>Lista de Tarefas | Docker + Flask + Nginx + Redis + PostgreSQL + HTML + CSS</p>
+    </div>
+</body>
+</html> 
