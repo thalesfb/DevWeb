@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento de Estoque</title>
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Monitoramento de Estoque</h1>
+        
+        <div class="monitors">
+            <div class="monitor">
+                <h2>HTTP Polling</h2>
+                <div id="polling-content" class="content">
+                    <!-- Produtos serão inseridos aqui -->
+                </div>
+            </div>
+
+            <div class="monitor">
+                <h2>WebSocket</h2>
+                <div id="websocket-content" class="content">
+                    <!-- Produtos serão inseridos aqui -->
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h2>Simulador de Vendas</h2>
+            <div class="form-group">
+                <label for="product">Produto:</label>
+                <select id="product">
+                    <option value="1">Notebook Dell</option>
+                    <option value="2">Monitor LG</option>
+                    <option value="3">Teclado HyperX</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantidade:</label>
+                <input type="number" id="quantity" min="1" value="1">
+            </div>
+            <button onclick="simulateOrder()">Simular Venda</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
