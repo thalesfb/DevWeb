@@ -1,0 +1,81 @@
+/* Reset Universal e preliminares */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Tipografia e layout base */
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+}
+
+/* Elementos estruturais (semânticos) */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+/* Títulos e parágrafos */
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+/* Listas */
+ul, ol {
+  list-style: none;
+}
+
+/* Tabelas */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Citações (blockquote e quotes) */
+blockquote, q {
+  quotes: none;
+}
+blockquote::before, blockquote::after,
+q::before, q::after {
+  content: '';
+  content: none;
+}
+
+/* Botões e elementos de formulário */
+button, input, select, textarea {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* Links */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Imagens */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Acessibilidade: foco visível */
+:focus {
+  outline: 3px solid #4d90fe;
+  outline-offset: 2px;
+}
