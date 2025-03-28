@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Corpo Docente - Ciência da Computação IFC</title>
+  <meta name="description" content="Informações sobre o corpo docente do curso de Ciência da Computação do IFC Videira" />
+  <meta name="author" content="Thales" />
+  <link rel="stylesheet" href="reset.css" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Fonte externa -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👨‍🏫</text></svg>" type="image/svg+xml" />
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <h1>Corpo Docente - Ciência da Computação</h1>
+      <p>Instituto Federal Catarinense - Campus Videira</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="intro-message">
+        <h2>Corpo Docente - Ciência da Computação</h2>
+        <p>Para visualizar os dados do corpo docente do curso de Ciência da Computação do IFC Campus Videira, clique no botão abaixo.</p>
+        <p>Os dados são obtidos através de <strong>web scraping</strong> do site oficial do IFC.</p>
+        <p class="note"><strong>Nota:</strong> O carregamento dos dados pode ser bloqueado pelas políticas de segurança do seu navegador.</p>
+        <button id="load-data-button" class="primary-button">Carregar Dados do Corpo Docente</button>
+        <p>Se preferir, você pode <a href="https://videira.ifc.edu.br/ciencia-da-computacao/corpo-docente/" target="_blank" rel="noreferrer">visitar o site oficial</a> para ver os dados diretamente.</p>
+      </div>
+
+      <div class="controls">
+        <div class="search-container">
+          <input type="text" id="search-input" placeholder="Buscar professor..." aria-label="Buscar professor por nome">
+          <button id="search-button" aria-label="Buscar">Buscar</button>
+        </div>
+        <div class="export-container">
+          <button id="update-data" aria-label="Atualizar dados" title="Forçar atualização dos dados">Atualizar Dados</button>
+          <button id="export-csv" aria-label="Exportar dados para CSV">Exportar CSV</button>
+          <button id="export-json" aria-label="Exportar dados para JSON">Exportar JSON</button>
+        </div>
+      </div>
+
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p id="loading-status">Carregando informações do corpo docente...</p>
+      </div>
+
+      <div id="error-message" class="error-message hidden">
+        <p id="error-text">Não foi possível carregar as informações. Por favor, tente novamente mais tarde.</p>
+        <button id="retry-button">Tentar Novamente</button>
+        <button id="use-cached-button" class="secondary-button">Usar Dados em Cache</button>
+        <button id="use-static-button" class="secondary-button">Usar Dados Estáticos</button>
+      </div>
+
+      <div id="professors-container" class="professors-container hidden">
+        <div class="data-source-indicator" id="data-source">
+          <span>Fonte dos dados: <strong id="data-source-text">Carregamento direto</strong></span>
+          <span id="data-timestamp"></span>
+        </div>
+        
+        <div class="view-toggle">
+          <button id="table-view" class="active" aria-label="Visualizar como tabela">Tabela</button>
+          <button id="card-view" aria-label="Visualizar como cartões">Cartões</button>
+        </div>
+        
+        <div id="table-container" class="table-container">
+          <table id="professors-table" aria-label="Tabela de professores do curso de Ciência da Computação">
+            <thead>
+              <tr>
+                <th>Foto</th>
+                <th>Nome</th>
+                <th>Titulação</th>
+                <th>Área</th>
+                <th>Email</th>
+                <th>Lattes</th>
+              </tr>
+            </thead>
+            <tbody id="professors-list">
+              <!-- Os professores serão inseridos aqui -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="cards-container" class="cards-container hidden">
+          <div id="professors-cards" class="professors-cards">
+            <!-- Os cartões de professores serão inseridos aqui -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 - Este site foi desenvolvido para a disciplina de Desenvolvimento Web I</p>
+      <p>Dados obtidos de: <a href="https://videira.ifc.edu.br/ciencia-da-computacao/corpo-docente/" target="_blank" rel="noreferrer">IFC Videira</a></p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+
+</html>
