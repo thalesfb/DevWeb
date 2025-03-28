@@ -23,7 +23,44 @@ app.get('/api/products', (req, res) => {
     res.json(products);
 });
 
-// Endpoint para atualizar estoque (simulação de vendas)
+// Adicionando suporte a SSE no servidor
+let sseClients = [];
+
+app.get('/sse', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    // Adiciona o cliente à lista de conexões SSE
+    sseClients.push(res);
+
+    // Envia uma mensagem inicial em formato JSON
+    const initialMessage = {
+        type: 'connection',
+        timestamp: new Date().toISOString(),
+        data: products
+    };
+    res.write(`data: ${JSON.stringify(initialMessage)}\n\n`);
+
+    // Remove o cliente da lista ao encerrar a conexão
+    req.on('close', () => {
+        sseClients = sseClients.filter(client => client !== res);
+    });
+});
+
+// Função para enviar atualizações SSE para todos os clientes conectados
+function notifySSEClients(products) {
+    const message = {
+        type: 'update',
+        timestamp: new Date().toISOString(),
+        data: products
+    };
+    sseClients.forEach(client => {
+        client.write(`data: ${JSON.stringify(message)}\n\n`);
+    });
+}
+
+// Atualizando o endpoint para notificar clientes SSE
 app.post('/api/update-stock', (req, res) => {
     const { productId, quantity } = req.body;
     const product = Object.values(products).find(p => p.id === productId);
@@ -36,6 +73,10 @@ app.post('/api/update-stock', (req, res) => {
                 client.send(JSON.stringify(products));
             }
         });
+
+        // Notifica todos os clientes SSE
+        notifySSEClients(products);
+
         res.json({ success: true, products });
     } else {
         res.status(400).json({ success: false, message: 'Estoque insuficiente' });
