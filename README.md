@@ -80,15 +80,17 @@ A REST API for managing recipes
   - RESTful endpoints
 
 ### [Stock Monitor](./stock-monitor/)
-Full-stack application for stock monitoring
+Full-stack application for stock monitoring in real time
 - Technologies:
-  - Frontend: HTML, CSS, JavaScript
-  - Backend: Node.js
-  - Real-time updates
+  - Frontend: HTML5, CSS3, JavaScript (Vanilla)
+  - Backend: Node.js, Express.js
+  - Real-time: WebSocket (ws), Server-Sent Events, HTTP Polling
 - Features:
-  - Stock price monitoring
-  - Interactive dashboard
-  - Server-side data processing
+  - Real-time monitoring via three simultaneous methods
+  - Interactive dashboard with low-stock indicators
+  - Automatic updates with intelligent reconnection
+  - Simulation of sales and stock updates
+  - Responsive interface with modern layout
 
 ### [Todo List](./to_do_list/)
 Containerized todo list application
