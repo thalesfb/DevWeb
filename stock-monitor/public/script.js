@@ -1,6 +1,7 @@
 // Configurações
 const POLLING_INTERVAL = 5000; // 5 segundos
 const API_URL = 'http://localhost:3000/api';
+const SSE_URL = 'http://localhost:3000/sse';
 const WS_URL = 'ws://localhost:3000';
 
 // Elementos DOM
@@ -60,6 +61,38 @@ function startWebSocket() {
     };
 }
 
+// Implementação SSE
+
+function startSSE() {
+    const eventSource = new EventSource('/sse');
+
+    eventSource.onopen = () => {
+        console.log('Conexão SSE estabelecida');
+    };
+
+    eventSource.onmessage = (event) => {
+        try {
+            const message = JSON.parse(event.data);
+            console.log('Mensagem SSE recebida:', message);
+
+            if (message.type === 'connection' || message.type === 'update') {
+                const products = message.data;
+                const timestamp = new Date(message.timestamp).toLocaleTimeString();
+                document.getElementById('sse-content').innerHTML = formatProducts(products, timestamp);
+            }
+        } catch (error) {
+            console.error('Erro ao processar mensagem SSE:', error);
+        }
+    };
+
+    eventSource.onerror = (error) => {
+        console.error('Erro no EventSource:', error);
+        eventSource.close();
+        // Tentar reconectar após 5 segundos
+        setTimeout(startSSE, 5000);
+    };
+}
+
 // Função para simular uma venda
 async function simulateOrder() {
     const productId = parseInt(document.getElementById('product').value);
@@ -87,3 +120,4 @@ async function simulateOrder() {
 // Iniciar os monitores
 startPolling();
 startWebSocket();
+startSSE();
